@@ -9,14 +9,14 @@ import { delay } from "rxjs/operators";
 })
 export class AuthService {
   //Only for demo purpose
-  authenticated = true;
+  private authenticated: boolean;
 
   constructor(private store: LocalStoreService, private router: Router) {
     this.checkAuth();
   }
 
   checkAuth() {
-    // this.authenticated = this.store.getItem("demo_login_status");
+    return this.authenticated = this.store.getItem("authenticated");
   }
 
   getuser() {
@@ -25,12 +25,12 @@ export class AuthService {
 
   signin(credentials) {
     this.authenticated = true;
-    this.store.setItem("demo_login_status", true);
+    this.store.setItem("authenticated", true);
     return of({}).pipe(delay(1500));
   }
   signout() {
     this.authenticated = false;
-    this.store.setItem("demo_login_status", false);
+    this.store.setItem("authenticated", false);
     this.router.navigateByUrl("/sessions/signin");
   }
 }
