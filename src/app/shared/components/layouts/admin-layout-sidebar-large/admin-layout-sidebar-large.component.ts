@@ -8,7 +8,8 @@ import { PerfectScrollbarDirective } from 'ngx-perfect-scrollbar';
 @Component({
   selector: 'app-admin-layout-sidebar-large',
   templateUrl: './admin-layout-sidebar-large.component.html',
-  styleUrls: ['./admin-layout-sidebar-large.component.scss']
+  styleUrls: ['./admin-layout-sidebar-large.component.scss'],
+  animations: [SharedAnimations]
 })
 export class AdminLayoutSidebarLargeComponent implements OnInit {
 
