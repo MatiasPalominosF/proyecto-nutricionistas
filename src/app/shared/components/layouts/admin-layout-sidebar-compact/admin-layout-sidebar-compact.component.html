@@ -1,14 +1,14 @@
-<div class="app-admin-wrap layout-sidebar-large">
-    <div>
-        <app-header-sidebar-large></app-header-sidebar-large>
-    </div>
+<div class="app-admin-wrap layout-sidebar-compact clearfix" 
+[ngClass]="{'sidenav-open': navService.sidebarState.sidenavOpen}">
     <div class="side-content-wrap">
-        <app-sidebar-large></app-sidebar-large>
+        <app-sidebar-compact></app-sidebar-compact>
     </div>
-    <div class="main-content-wrap d-flex flex-column" 
-    [ngClass]="{'sidenav-open': navService.sidebarState.sidenavOpen}" 
+    <div class="main-content-wrap d-flex flex-column"
     [perfectScrollbar]="{suppressScrollX: true}">
-        <router-outlet></router-outlet>
+        <app-header-sidebar-compact></app-header-sidebar-compact>
+        <div class="main-content">
+            <router-outlet></router-outlet>
+        </div>
         <div class="flex-grow-1"></div>
         <app-footer></app-footer>
         <div class="module-loader" *ngIf="moduleLoading">

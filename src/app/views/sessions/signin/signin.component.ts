@@ -3,6 +3,7 @@ import { SharedAnimations } from 'src/app/shared/animations/shared-animations';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../../shared/services/auth.service';
 import { Router, RouteConfigLoadStart, ResolveStart, RouteConfigLoadEnd, ResolveEnd } from '@angular/router';
+import { LocalStoreService } from 'src/app/shared/services/local-store.service';
 
 @Component({
     selector: 'app-signin',
@@ -17,10 +18,13 @@ export class SigninComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private auth: AuthService,
-        private router: Router
+        private router: Router,
+        private ls: LocalStoreService,
     ) { }
 
     ngOnInit() {
+        this.isAutenticated();
+
         this.router.events.subscribe(event => {
             if (event instanceof RouteConfigLoadStart || event instanceof ResolveStart) {
                 this.loadingText = 'Loading Dashboard Module...';
@@ -46,6 +50,16 @@ export class SigninComponent implements OnInit {
                 this.router.navigateByUrl('/dashboard/v1');
                 this.loading = false;
             });
+    }
+
+    isAutenticated(): void {
+        if (!this.ls.getItem('authenticated')) {
+            return;
+        }
+        this.loading = true;
+        this.loadingText = 'Sigining in...';
+        this.router.navigateByUrl('/dashboard/v1');
+        this.loading = false;
     }
 
 }

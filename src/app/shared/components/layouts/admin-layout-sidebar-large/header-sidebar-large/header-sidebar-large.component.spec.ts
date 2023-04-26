@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HeaderSidebarLargeComponent } from './header-sidebar-large.component';
 
@@ -6,7 +6,7 @@ describe('HeaderSidebarLargeComponent', () => {
   let component: HeaderSidebarLargeComponent;
   let fixture: ComponentFixture<HeaderSidebarLargeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ HeaderSidebarLargeComponent ]
     })

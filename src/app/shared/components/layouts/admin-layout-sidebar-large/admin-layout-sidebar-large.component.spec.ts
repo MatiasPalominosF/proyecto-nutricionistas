@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AdminLayoutSidebarLargeComponent } from './admin-layout-sidebar-large.component';
 
@@ -6,7 +6,7 @@ describe('AdminLayoutSidebarLargeComponent', () => {
   let component: AdminLayoutSidebarLargeComponent;
   let fixture: ComponentFixture<AdminLayoutSidebarLargeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AdminLayoutSidebarLargeComponent ]
     })

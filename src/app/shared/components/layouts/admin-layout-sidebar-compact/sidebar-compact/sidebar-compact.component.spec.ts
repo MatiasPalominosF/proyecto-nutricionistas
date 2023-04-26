@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { NotFoundComponent } from './not-found.component';
+import { SidebarCompactComponent } from './sidebar-compact.component';
 
-describe('NotFoundComponent', () => {
-  let component: NotFoundComponent;
-  let fixture: ComponentFixture<NotFoundComponent>;
+describe('SidebarCompactComponent', () => {
+  let component: SidebarCompactComponent;
+  let fixture: ComponentFixture<SidebarCompactComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NotFoundComponent ]
+      declarations: [ SidebarCompactComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NotFoundComponent);
+    fixture = TestBed.createComponent(SidebarCompactComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

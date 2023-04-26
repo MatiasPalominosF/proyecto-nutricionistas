@@ -1,3 +1,9 @@
+# REQUIREMENTS
+
+npm install -g firebase-tools@10.2.0
+npm i @angular/fire@7.0
+npm i firebase@9
+
 # Gull
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli).
