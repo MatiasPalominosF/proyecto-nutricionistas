@@ -37,6 +37,10 @@
             ],
             "scripts": [
               "node_modules/echarts/dist/echarts.min.js"
+            ],
+            "allowedCommonJsDependencies": [
+              "highlight.js",
+              "echarts"
             ]
           },
           "configurations": {
