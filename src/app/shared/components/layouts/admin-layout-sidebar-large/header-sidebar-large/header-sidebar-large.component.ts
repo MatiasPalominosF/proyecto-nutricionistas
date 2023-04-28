@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationService } from '../../../../services/navigation.service';
-import { SearchService } from '../../../../services/search.service';
-import { AuthService } from '../../../../services/auth.service';
+import { NavigationService } from '../../../../services/navigation/navigation.service';
+import { SearchService } from '../../../../services/search/search.service';
+import { AuthService } from '../../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-header-sidebar-large',

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { DataLayerService } from '../../services/data-layer.service';
+import { DataLayerService } from '../../services/data-layer/data-layer.service';
 import { Observable, combineLatest } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { startWith, debounceTime, switchMap, map } from 'rxjs/operators';
 import { SharedAnimations } from '../../animations/shared-animations';
-import { SearchService } from '../../services/search.service';
+import { SearchService } from '../../services/search/search.service';
 
 @Component({
   selector: 'app-search',

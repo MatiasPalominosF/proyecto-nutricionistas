@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import { NavigationService } from "src/app/shared/services/navigation.service";
-import { SearchService } from "src/app/shared/services/search.service";
-import { AuthService } from "src/app/shared/services/auth.service";
+import { NavigationService } from "src/app/shared/services/navigation/navigation.service";
+import { SearchService } from "src/app/shared/services/search/search.service";
+import { AuthService } from "src/app/shared/services/auth/auth.service";
 
 @Component({
   selector: "app-header-sidebar-compact",

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SidebarDirective } from '../directives/sidebar.directive';
+import { SidebarDirective } from '../../directives/sidebar.directive';
 
 @Injectable({
   providedIn: 'root'
