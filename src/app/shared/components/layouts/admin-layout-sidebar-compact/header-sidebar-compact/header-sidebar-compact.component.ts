@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
-import { NavigationService } from "src/app/shared/services/navigation.service";
-import { SearchService } from "src/app/shared/services/search.service";
-import { AuthService } from "src/app/shared/services/auth.service";
+import { NavigationService } from "src/app/shared/services/navigation/navigation.service";
+import { SearchService } from "src/app/shared/services/search/search.service";
+import { AuthService } from "src/app/shared/services/auth/auth.service";
+import { User } from "src/app/shared/models/user.interface";
+import { EncryptionService } from "src/app/shared/services/encryption/encryption.service";
+import { LocalStoreService } from "src/app/shared/services/local-store/local-store.service";
 
 @Component({
   selector: "app-header-sidebar-compact",
@@ -9,12 +12,15 @@ import { AuthService } from "src/app/shared/services/auth.service";
   styleUrls: ["./header-sidebar-compact.component.scss"]
 })
 export class HeaderSidebarCompactComponent implements OnInit {
-  notifications: any[];
+  public notifications: any[];
+  public userData: User = {};
 
   constructor(
     private navService: NavigationService,
     public searchService: SearchService,
-    private auth: AuthService
+    private auth: AuthService,
+    private encryptionService: EncryptionService,
+    private ls: LocalStoreService
   ) {
     this.notifications = [
       {
@@ -63,7 +69,15 @@ export class HeaderSidebarCompactComponent implements OnInit {
     ];
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getDataUser();
+  }
+
+  getDataUser() {
+    const userEncrypted: string = this.ls.getItem('currentUser');
+    const userDecrypted: User = this.encryptionService.decrypt(userEncrypted);
+    this.userData = userDecrypted;
+  }
 
   toggelSidebar() {
     const state = this.navService.sidebarState;
@@ -72,6 +86,6 @@ export class HeaderSidebarCompactComponent implements OnInit {
   }
 
   signout() {
-    this.auth.signout();
+    this.auth.doLogout();
   }
 }

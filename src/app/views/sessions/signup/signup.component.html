@@ -1,21 +1,40 @@
-<div class="card o-hidden" [@animate]="{value:'*',params:{y:'120px',opacity:'0',delay:'100ms', duration: '400ms'}}">
+<div
+  class="card o-hidden"
+  [@animate]="{
+    value: '*',
+    params: { y: '120px', opacity: '0', delay: '100ms', duration: '400ms' }
+  }"
+>
   <div class="row">
-    <div class="col-md-6 text-center " style="background-size: cover;background-image: url(./assets/images/photo-long-3.jpg)">
+    <div
+      class="col-md-6 text-center"
+      style="
+        background-size: cover;
+        background-image: url(./assets/images/photo-long-3.jpg);
+      "
+    >
       <div class="pl-3 auth-right">
         <div class="auth-logo text-center mt-4">
-          <img src="assets/images/logo.png" alt="">
+          <img src="assets/images/logo.png" alt="" />
         </div>
         <div class="flex-grow-1"></div>
         <div class="w-100 mb-4">
-          <button class="btn btn-outline-primary btn-outline-email btn-block btn-icon-text btn-rounded" routerLink="/sessions/signin">
+          <button
+            class="btn btn-outline-primary btn-outline-email btn-block btn-icon-text btn-rounded"
+            routerLink="/sessions/signin"
+          >
             <i class="i-Mail-with-At-Sign"></i>
             Sign in with Email
           </button>
-          <button class="btn btn-outline-primary btn-outline-google btn-block btn-icon-text btn-rounded">
+          <button
+            class="btn btn-outline-primary btn-outline-google btn-block btn-icon-text btn-rounded"
+          >
             <i class="i-Google-Plus"></i>
             Sign in with Google
           </button>
-          <button class="btn btn-outline-primary btn-outline-facebook btn-block btn-icon-text btn-rounded">
+          <button
+            class="btn btn-outline-primary btn-outline-facebook btn-block btn-icon-text btn-rounded"
+          >
             <i class="i-Facebook-2"></i>
             Sign in with Facebook
           </button>
@@ -26,27 +45,101 @@
 
     <div class="col-md-6">
       <div class="p-4">
-        
-        <h1 class="mb-3 text-18">Sign Up</h1>
+        <h1 class="mb-3 text-18">Registro</h1>
         <!-- <p class="mb-4 text-muted font-small">Lorem ipsum dolor sit amet.</p> -->
-        <form action="">
+        <form [formGroup]="registerForm" (ngSubmit)="tryRegister()">
           <div class="form-group">
-            <label for="username">Your name</label>
-            <input id="username" class="form-control form-control-rounded" type="text">
+            <label for="name">Nombre</label>
+            <input
+              id="name"
+              formControlName="name"
+              class="form-control form-control-rounded"
+              type="text"
+              [ngClass]="{
+                'is-invalid': submitted && f.name.errors
+              }"
+              placeholder="Ingrese nombre"
+            /><small
+              class="form-text text-muted danger"
+              *ngIf="submitted && f.name.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('name', 'required')">
+                El nombre del usuario es requerido
+              </div>
+            </small>
           </div>
           <div class="form-group">
-            <label for="email">Email address</label>
-            <input id="email" class="form-control form-control-rounded" type="email">
+            <label for="rut">RUT</label>
+            <input
+              id="rut"
+              formControlName="rut"
+              class="form-control form-control-rounded"
+              type="text"
+              [ngClass]="{
+                'is-invalid': submitted && f.rut.errors
+              }"
+              placeholder="Ingrese RUT"
+            /><small
+              class="form-text text-muted danger"
+              *ngIf="submitted && f.rut.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('rut', 'required')">
+                El rut del usuario es requerido
+              </div>
+            </small>
           </div>
           <div class="form-group">
-            <label for="password">Password</label>
-            <input id="password" class="form-control form-control-rounded" type="password">
+            <label for="email">Email</label>
+            <input
+              id="email"
+              formControlName="email"
+              class="form-control form-control-rounded"
+              type="email"
+              [ngClass]="{
+                'is-invalid': submitted && f.email.errors
+              }"
+              placeholder="Ingrese email"
+            /><small
+              class="form-text text-muted danger"
+              *ngIf="submitted && f.email.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('email', 'required')">
+                El email del usuario es requerido
+              </div>
+            </small>
           </div>
           <div class="form-group">
-            <label for="repassword">Retype password</label>
-            <input id="repassword" class="form-control form-control-rounded" type="password">
+            <label for="password">Contraseña</label>
+            <input
+              id="password"
+              formControlName="password"
+              class="form-control form-control-rounded"
+              type="password"
+              [ngClass]="{
+                'is-invalid': submitted && f.password.errors
+              }"
+              placeholder="Ingrese contraseña"
+            /><small
+              class="form-text text-muted danger"
+              *ngIf="submitted && f.password.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('password', 'required')">
+                La contraseña del usuario es requerida
+              </div>
+            </small>
           </div>
-          <button class="btn btn-primary btn-block btn-rounded mt-3">Sign Up</button>
+          <btn-loading
+            btnClass="btn-primary btn-rounded btn-block mt-3"
+            [loadingText]="loadingText"
+            [loading]="loading"
+            [type]="'submit'"
+          >
+            Registrar
+          </btn-loading>
         </form>
       </div>
     </div>

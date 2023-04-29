@@ -3,7 +3,7 @@ import {
   NavigationService,
   IMenuItem,
   IChildItem
-} from "../../../../services/navigation.service";
+} from "../../../../services/navigation/navigation.service";
 import { Router, NavigationEnd } from "@angular/router";
 import { filter } from "rxjs/operators";
 import { Utils } from "../../../../utils";

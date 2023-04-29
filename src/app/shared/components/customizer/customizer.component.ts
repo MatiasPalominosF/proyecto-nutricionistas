@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { NavigationService } from "../../services/navigation.service";
-import { CustomizerService } from "../../services/customizer.service";
+import { NavigationService } from "../../services/navigation/navigation.service";
+import { CustomizerService } from "../../services/customizer/customizer.service";
 import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
 
