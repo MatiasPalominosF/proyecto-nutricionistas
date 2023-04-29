@@ -33,6 +33,7 @@
     "bootstrap": "^4.5.2",
     "classlist.js": "1.1.20150312",
     "core-js": "3.6.4",
+    "crypto-js": "^4.1.1",
     "date-fns": "2.10.0",
     "echarts": "4.6.0",
     "feather-icons": "4.7.3",

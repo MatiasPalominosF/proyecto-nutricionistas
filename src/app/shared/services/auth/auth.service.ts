@@ -75,7 +75,7 @@ export class AuthService {
   }
 
   async doLogout() {
-    localStorage.removeItem('dataCurrentUser');
+    localStorage.removeItem('currentUser');
     try {
       await this.afAuth.signOut();
       this.router.navigateByUrl("/sessions/signin");

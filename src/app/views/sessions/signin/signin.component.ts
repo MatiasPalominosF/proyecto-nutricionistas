@@ -6,7 +6,9 @@ import { Router, RouteConfigLoadStart, ResolveStart, RouteConfigLoadEnd, Resolve
 import { LocalStoreService } from 'src/app/shared/services/local-store/local-store.service';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from 'src/app/shared/services/user/user.service';
-import { Subscription } from 'rxjs';
+import { Subscription, of } from 'rxjs';
+import { EncryptionService } from 'src/app/shared/services/encryption/encryption.service';
+import { delay } from 'rxjs/operators';
 
 @Component({
     selector: 'app-signin',
@@ -28,6 +30,7 @@ export class SigninComponent implements OnInit, OnDestroy {
         private ls: LocalStoreService,
         private toastr: ToastrService,
         private userService: UserService,
+        private encryptionService: EncryptionService,
     ) { }
 
     ngOnDestroy(): void {
@@ -35,20 +38,25 @@ export class SigninComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.router.events.subscribe(event => {
-            if (event instanceof RouteConfigLoadStart || event instanceof ResolveStart) {
-                this.loadingText = 'Cargando módulo dashboard...';
-                this.loading = true;
-            }
-            if (event instanceof RouteConfigLoadEnd || event instanceof ResolveEnd) {
-                this.loading = false;
-            }
-        });
-
         this.signinForm = this.fb.group({
             email: ['palominos90@gmail.com', Validators.required],
             password: ['Matias1996', Validators.required]
         });
+        this.checkRouterEvent();
+    }
+
+    checkRouterEvent() {
+        setTimeout(() => {
+            this.router.events.subscribe(event => {
+                if (event instanceof RouteConfigLoadStart || event instanceof ResolveStart) {
+                    this.loadingText = 'Cargando módulo dashboard...';
+                    this.loading = true;
+                }
+                if (event instanceof RouteConfigLoadEnd || event instanceof ResolveEnd) {
+                    this.loading = false;
+                }
+            });
+        }, 3000)
     }
 
     async signin() {
@@ -60,13 +68,17 @@ export class SigninComponent implements OnInit, OnDestroy {
             const res = await this.auth.doLogin(this.fValue);
             this.subscriptions.push(
                 this.userService.getUserByUid(res.user.uid).subscribe(async (user) => {
-                    this.ls.setItem('currentUser', user);
+                    const userEncrypted = this.encryptionService.encrypt(user);
+                    this.ls.setItem('currentUser', userEncrypted);
                     this.router.navigateByUrl('/dashboard/v1');
                     this.loading = false;
                 })
             );
         } catch (err) {
-            this.toastr.error('Error al iniciar sesión', 'Inicio sesión', { timeOut: 3000, closeButton: true, progressBar: true })
+            if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-email') {
+                this.toastr.error('Correo o contraseña incorrecta', 'Inicio sesión', { timeOut: 3000, closeButton: true, progressBar: true })
+            }
+            this.loading = false;
         }
     }
 
@@ -76,7 +88,7 @@ export class SigninComponent implements OnInit, OnDestroy {
             return;
         }
         this.loading = true;
-        this.loadingText = 'Sigining in...';
+        this.loadingText = 'Iniciando...';
         this.router.navigateByUrl('/dashboard/v1');
         this.loading = false;
     }
