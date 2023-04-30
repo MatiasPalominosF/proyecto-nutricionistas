@@ -1,15 +1,118 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AddUserComponent } from '../add-user/add-user.component';
+import { ToastrService } from 'ngx-toastr';
+
+export interface UserData {
+  id: string;
+  name: string;
+  progress: string;
+  fruit: string;
+}
+
+/** Constants used to fill up our data base. */
+const FRUITS: string[] = [
+  'blueberry',
+  'lychee',
+  'kiwi',
+  'mango',
+  'peach',
+  'lime',
+  'pomegranate',
+  'pineapple',
+];
+const NAMES: string[] = [
+  'Maia',
+  'Asher',
+  'Olivia',
+  'Atticus',
+  'Amelia',
+  'Jack',
+  'Charlotte',
+  'Theodore',
+  'Isla',
+  'Oliver',
+  'Isabella',
+  'Jasper',
+  'Cora',
+  'Levi',
+  'Violet',
+  'Arthur',
+  'Mia',
+  'Thomas',
+  'Elizabeth',
+];
+
 
 @Component({
   selector: 'app-users-view',
   templateUrl: './users-view.component.html',
   styleUrls: ['./users-view.component.scss']
 })
-export class UsersViewComponent implements OnInit {
+export class UsersViewComponent implements OnInit, AfterViewInit {
 
-  constructor() { }
+  displayedColumns: string[] = ['id', 'name', 'progress', 'fruit'];
+  dataSource: MatTableDataSource<UserData>;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+
+  constructor(
+    private modalService: NgbModal,
+    private toastr: ToastrService
+  ) {
+    // Create 100 users
+    const users = Array.from({ length: 100 }, (_, k) => this.createNewUser(k + 1));
+
+    // Assign the data to the data source for the table to render
+    this.dataSource = new MatTableDataSource(users);
+  }
 
   ngOnInit(): void {
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  /** Builds and returns a new User. */
+  createNewUser(id: number): UserData {
+    const name =
+      NAMES[Math.round(Math.random() * (NAMES.length - 1))] +
+      ' ' +
+      NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) +
+      '.';
+
+    return {
+      id: id.toString(),
+      name: name,
+      progress: Math.round(Math.random() * 100).toString(),
+      fruit: FRUITS[Math.round(Math.random() * (FRUITS.length - 1))],
+    };
+  }
+
+  addUser() {
+    const modalRef = this.modalService.open(AddUserComponent, { ariaLabelledBy: 'Modal usuario', windowClass: 'animated fadeInDown my-class', backdrop: 'static' });
+    modalRef.result.then((result) => {
+      if (result) {
+        this.toastr.success('Usuario agregado con éxito', 'Nuevo usuario', { timeOut: 3000, closeButton: true, progressBar: true })
+      }
+    }, (reason) => {
+      console.info('Modal close');
+    });
   }
 
 }

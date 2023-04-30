@@ -123,17 +123,14 @@ export class NavigationService {
     // You can customize this method to supply different menu for
     // different user type.
 
+    private readonly menus = {
+        'admin': this.defaultMenu,
+        'user': this.defaultMenu,
+        'superadmin': this.superAdmin,
+    };
+    
     publishNavigationChange(menuType: string) {
-        console.log(menuType);
-        switch (menuType) {
-            case 'admin':
-                this.menuItems.next(this.defaultMenu);
-                break;
-            case 'user':
-                this.menuItems.next(this.defaultMenu);
-                break;
-            default: //superadmin
-                this.menuItems.next(this.superAdmin);
-        }
+        this.menuItems.next(this.menus[menuType] || this.defaultMenu);
     }
+
 }

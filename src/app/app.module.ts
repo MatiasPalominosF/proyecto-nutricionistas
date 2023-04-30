@@ -11,6 +11,8 @@ import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { HttpClientModule } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { getSpanishPaginatorIntl } from './shared/spanish-paginator';
 
 @NgModule({
   declarations: [
@@ -24,9 +26,13 @@ import { environment } from 'src/environments/environment';
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     AngularFireAuthModule,
     BrowserAnimationsModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: MatPaginatorIntl, useValue: getSpanishPaginatorIntl()
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

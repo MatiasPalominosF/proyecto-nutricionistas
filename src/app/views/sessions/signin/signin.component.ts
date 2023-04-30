@@ -32,7 +32,6 @@ export class SigninComponent implements OnInit, OnDestroy {
         private toastr: ToastrService,
         private userService: UserService,
         private encryptionService: EncryptionService,
-        private navigationService: NavigationService,
     ) { }
 
     ngOnDestroy(): void {
@@ -73,7 +72,6 @@ export class SigninComponent implements OnInit, OnDestroy {
                     const encryptData = this.encryptionService.encrypt(user);
                     this.ls.setItem('currentUser', encryptData)
                     this.auth.setCurrentUser = encryptData;
-                    this.navigationService.publishNavigationChange(user.role);
                     this.router.navigateByUrl('/dashboard/v1');
                     this.loading = false;
                 })

@@ -1,0 +1,46 @@
+table {
+  width: 100%;
+}
+
+.mat-mdc-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+td,
+th {
+  width: 25%;
+}
+
+.mat-elevation-z8 {
+  overflow-x: auto;
+}
+
+@media screen and (max-width: 768px) {
+  .mat-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .mat-header-cell,
+  .mat-cell {
+    display: inline-block;
+    border-bottom: 1px solid #ddd;
+    vertical-align: top;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .mat-header-cell {
+    font-weight: bold;
+  }
+
+  .mat-cell {
+    text-align: left;
+  }
+
+  table {
+    padding: 16px;
+  }
+}

@@ -1,0 +1,42 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Añadir nuevo usuario</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form>
+    <div class="form-group">
+      <label for="picker1">Date picker</label>
+      <div class="input-group">
+        <input
+          id="picker1"
+          class="form-control"
+          placeholder="yyyy-mm-dd"
+          name="dp"
+          ngbDatepicker
+          #dp="ngbDatepicker"
+        />
+        <div class="input-group-append">
+          <button class="btn btn-secondary" (click)="dp.toggle()" type="button">
+            <i class="icon-regular i-Calendar-4"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-outline-dark btn-rounded"
+    (click)="onSubmit()"
+  >
+    Save
+  </button>
+</div>
