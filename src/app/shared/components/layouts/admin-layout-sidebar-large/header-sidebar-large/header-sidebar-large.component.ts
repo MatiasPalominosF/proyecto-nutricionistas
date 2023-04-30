@@ -5,6 +5,7 @@ import { AuthService } from '../../../../services/auth/auth.service';
 import { EncryptionService } from 'src/app/shared/services/encryption/encryption.service';
 import { LocalStoreService } from 'src/app/shared/services/local-store/local-store.service';
 import { User } from 'src/app/shared/models/user.interface';
+import { UserService } from 'src/app/shared/services/user/user.service';
 
 @Component({
   selector: 'app-header-sidebar-large',
@@ -21,7 +22,6 @@ export class HeaderSidebarLargeComponent implements OnInit {
     public searchService: SearchService,
     private auth: AuthService,
     private encryptionService: EncryptionService,
-    private ls: LocalStoreService
   ) {
     this.notifications = [
       {
@@ -75,9 +75,8 @@ export class HeaderSidebarLargeComponent implements OnInit {
   }
 
   getDataUser() {
-    const userEncrypted: string = this.ls.getItem('currentUser');
-    const userDecrypted: User = this.encryptionService.decrypt(userEncrypted);
-    this.userData = userDecrypted;
+    const decryptedData = this.encryptionService.decrypt(this.auth.getCurrentUser);
+    this.userData = decryptedData;
   }
 
   toggelSidebar() {
@@ -103,6 +102,7 @@ export class HeaderSidebarLargeComponent implements OnInit {
   }
 
   signout() {
+    this.auth.setCurrentUser = null;
     this.auth.doLogout();
   }
 

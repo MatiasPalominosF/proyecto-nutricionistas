@@ -74,9 +74,8 @@ export class HeaderSidebarCompactComponent implements OnInit {
   }
 
   getDataUser() {
-    const userEncrypted: string = this.ls.getItem('currentUser');
-    const userDecrypted: User = this.encryptionService.decrypt(userEncrypted);
-    this.userData = userDecrypted;
+    const decryptedData = this.encryptionService.decrypt(this.auth.getCurrentUser);
+    this.userData = decryptedData;
   }
 
   toggelSidebar() {

@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, of } from "rxjs";
 import { delay } from "rxjs/operators";
 import { User } from "../../models/user.interface";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
+import { EncryptionService } from "../encryption/encryption.service";
 
 @Injectable({
   providedIn: "root"
@@ -12,20 +13,24 @@ import { AngularFireAuth } from "@angular/fire/compat/auth";
 export class AuthService {
   //Only for demo purpose
   private authenticated: boolean;
-  private currentUserSubject: BehaviorSubject<User>;
-  public currentUser: Observable<User>;
+  private currentUserSubject: BehaviorSubject<string>;
+  public currentUser: Observable<string>;
 
   constructor(
-    private store: LocalStoreService,
     private router: Router,
-    private afAuth: AngularFireAuth
+    private afAuth: AngularFireAuth,
+    private ls: LocalStoreService
   ) {
-    this.currentUserSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('currentUser')));
+    this.currentUserSubject = new BehaviorSubject<string>(this.ls.getItem('currentUser'));
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
-  checkAuth() {
-    return this.authenticated = this.store.getItem("currentUser");
+  public set setCurrentUser(user: string) {
+    this.currentUserSubject.next(user);
+  }
+
+  public get getCurrentUser(): string {
+    return this.currentUserSubject.value;
   }
 
   getuser() {
@@ -61,23 +66,10 @@ export class AuthService {
       }
     });
   }
-
-  signin(credentials) {
-    this.authenticated = true;
-    this.store.setItem("authenticated", true);
-    return of({}).pipe(delay(1500));
-  }
-
-  signout() {
-    this.authenticated = false;
-    this.store.setItem("authenticated", false);
-    this.router.navigateByUrl("/sessions/signin");
-  }
-
   async doLogout() {
-    localStorage.removeItem('currentUser');
     try {
       await this.afAuth.signOut();
+      localStorage.removeItem('currentUser');
       this.router.navigateByUrl("/sessions/signin");
     } catch (error) {
       console.error("Error al cerrar sesión ", error);

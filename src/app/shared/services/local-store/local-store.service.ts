@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class LocalStoreService {
 
-  private ls = window.localStorage;
+  private ls = localStorage;
   constructor() { }
 
   public setItem(key, value) {
@@ -19,10 +19,14 @@ export class LocalStoreService {
     try {
       return JSON.parse(value);
     } catch (e) {
-      // console.log(e)
       return null;
     }
   }
+
+  public remove(key: string): void {
+    this.ls.removeItem(key);
+  }
+
   public clear() {
     this.ls.clear();
   }

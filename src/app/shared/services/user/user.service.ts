@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../../models/user.interface';
 import { map } from 'rxjs/operators';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
+import { EncryptionService } from '../encryption/encryption.service';
+import { LocalStoreService } from '../local-store/local-store.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +15,12 @@ export class UserService {
   private usersCollection: AngularFirestoreCollection<User>;
   private userDoc: AngularFirestoreDocument<User>;
   private user: Observable<User>;
+  private currentUserSubject: BehaviorSubject<User>;
 
   constructor(
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private encryptionService: EncryptionService,
+    private ls: LocalStoreService
   ) {
     this.usersCollection = afs.collection<User>('users');
     this.users = this.usersCollection.valueChanges();
