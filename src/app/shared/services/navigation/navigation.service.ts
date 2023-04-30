@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
+import { EncryptionService } from '../encryption/encryption.service';
+import { User } from '../../models/user.interface';
 
 export interface IMenuItem {
     id?: string;
@@ -46,8 +49,39 @@ export class NavigationService {
     };
     selectedItem: IMenuItem;
 
-    constructor() {
+    constructor(
+        private encryptionService: EncryptionService,
+        private auth: AuthService
+    ) {
+        const decryptedUser = this.encryptionService.decrypt(this.auth.getCurrentUser) as User;
+        const userType = decryptedUser.role;
+
+        this.publishNavigationChange(userType);
     }
+
+    superAdmin: IMenuItem[] = [
+        { //DASHBOARD  
+            name: 'Dashboard',
+            description: 'Vistas principales',
+            type: 'dropDown',
+            icon: 'i-Bar-Chart',
+            sub: [
+                { icon: 'i-Clock-3', name: 'Version 1', state: '/dashboard/v1', type: 'link' },
+                { icon: 'i-Clock-4', name: 'Version 2', state: '/dashboard/v2', type: 'link' },
+                { icon: 'i-Over-Time', name: 'Version 3', state: '/dashboard/v3', type: 'link' },
+                { icon: 'i-Clock', name: 'Version 4', state: '/dashboard/v4', type: 'link' },
+            ]
+        },
+        {
+            name: 'Usuarios',
+            description: 'Gestión de usuarios',
+            type: 'link',
+            icon: 'i-Add-UserStar',
+            state: '/users/users-view'
+        },
+
+    ]
+
 
     defaultMenu: IMenuItem[] = [
         { //DASHBOARD  
@@ -88,16 +122,18 @@ export class NavigationService {
 
     // You can customize this method to supply different menu for
     // different user type.
-    // publishNavigationChange(menuType: string) {
-    //   switch (userType) {
-    //     case 'admin':
-    //       this.menuItems.next(this.adminMenu);
-    //       break;
-    //     case 'user':
-    //       this.menuItems.next(this.userMenu);
-    //       break;
-    //     default:
-    //       this.menuItems.next(this.defaultMenu);
-    //   }
-    // }
+
+    publishNavigationChange(menuType: string) {
+        console.log(menuType);
+        switch (menuType) {
+            case 'admin':
+                this.menuItems.next(this.defaultMenu);
+                break;
+            case 'user':
+                this.menuItems.next(this.defaultMenu);
+                break;
+            default: //superadmin
+                this.menuItems.next(this.superAdmin);
+        }
+    }
 }
