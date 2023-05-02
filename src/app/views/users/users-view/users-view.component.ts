@@ -5,47 +5,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddUserComponent } from '../add-user/add-user.component';
 import { ToastrService } from 'ngx-toastr';
-
-export interface UserData {
-  id: string;
-  name: string;
-  progress: string;
-  fruit: string;
-}
-
-/** Constants used to fill up our data base. */
-const FRUITS: string[] = [
-  'blueberry',
-  'lychee',
-  'kiwi',
-  'mango',
-  'peach',
-  'lime',
-  'pomegranate',
-  'pineapple',
-];
-const NAMES: string[] = [
-  'Maia',
-  'Asher',
-  'Olivia',
-  'Atticus',
-  'Amelia',
-  'Jack',
-  'Charlotte',
-  'Theodore',
-  'Isla',
-  'Oliver',
-  'Isabella',
-  'Jasper',
-  'Cora',
-  'Levi',
-  'Violet',
-  'Arthur',
-  'Mia',
-  'Thomas',
-  'Elizabeth',
-];
-
+import { UserService } from 'src/app/shared/services/user/user.service';
+import { User } from '../../../shared/models/user.interface';
 
 @Component({
   selector: 'app-users-view',
@@ -53,55 +14,74 @@ const NAMES: string[] = [
   styleUrls: ['./users-view.component.scss']
 })
 export class UsersViewComponent implements OnInit, AfterViewInit {
-
-  displayedColumns: string[] = ['id', 'name', 'progress', 'fruit'];
-  dataSource: MatTableDataSource<UserData>;
-
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
+  public displayedColumns: string[] = ['position', 'rut', 'name', 'phone', 'email', 'functionalities', 'actions'];
+  public dataSource: MatTableDataSource<User> = new MatTableDataSource<User>();
+
   constructor(
     private modalService: NgbModal,
-    private toastr: ToastrService
-  ) {
-    // Create 100 users
-    const users = Array.from({ length: 100 }, (_, k) => this.createNewUser(k + 1));
-
-    // Assign the data to the data source for the table to render
-    this.dataSource = new MatTableDataSource(users);
-  }
+    private toastr: ToastrService,
+    private userService: UserService,
+  ) { }
 
   ngOnInit(): void {
+    this.getData();
+  }
+
+  getData() {
+    this.userService.getAllUsers().subscribe(users => {
+      this.dataSource.data = users;
+    })
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    this.dataSource.sortingDataAccessor = this.sortingCustomAccesor;
+    this.dataSource.filterPredicate = this.filterCustomAccessor();
+  }
+
+
+  sortingCustomAccesor = (item: User, property: string) => {
+    switch (property) {
+      case 'rut': return item.rut;
+      case 'name': return item.name;
+      case 'phone': return item.phone;
+      case 'email': return item.email;
+      default: return item[property];
+    }
+  };
+
+  filterCustomAccessor() {
+    const myFilterPredicate = (data: User, filter: string): boolean => {
+      let searchString = JSON.parse(filter);
+
+      // Para compara numbers usar: data.position.toString().trim().indexOf(searchString.position) !== -1
+      return this.removeAccents(data.name).toString().trim().toLowerCase().indexOf(this.removeAccents(searchString.name).toString().trim().toLowerCase()) !== -1 ||
+        this.removeAccents(data.rut).toString().trim().toLowerCase().indexOf(this.removeAccents(searchString.rut).toLowerCase()) !== -1;
+    }
+    return myFilterPredicate;
+  }
+
+  removeAccents(str: string): string {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    let filteredValues: User = {};
+
+    filteredValues['name'] = filterValue;
+    filteredValues['rut'] = filterValue;
+    filteredValues['email'] = filterValue;
+    filteredValues['phone'] = filterValue;
+    this.dataSource.filter = JSON.stringify(filteredValues);
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
-  }
-
-  /** Builds and returns a new User. */
-  createNewUser(id: number): UserData {
-    const name =
-      NAMES[Math.round(Math.random() * (NAMES.length - 1))] +
-      ' ' +
-      NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) +
-      '.';
-
-    return {
-      id: id.toString(),
-      name: name,
-      progress: Math.round(Math.random() * 100).toString(),
-      fruit: FRUITS[Math.round(Math.random() * (FRUITS.length - 1))],
-    };
   }
 
   addUser() {

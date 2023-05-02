@@ -27,7 +27,9 @@ export class UserService {
   }
 
   getAllUsers(): Observable<User[]> {
-    return this.users = this.afs.collection<User>('users')
+    return this.users = this.afs.collection<User>('users',
+      ref => ref
+        .where('role', '!=', 'superadmin'))
       .snapshotChanges()
       .pipe(map(changes => {
         return changes.map(action => {
