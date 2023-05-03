@@ -17,7 +17,7 @@ export class UsersViewComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  public displayedColumns: string[] = ['position', 'rut', 'name', 'phone', 'email', 'functionalities', 'actions'];
+  public displayedColumns: string[] = ['position', 'rut', 'name', 'phone', 'email', 'enabled', 'functionalities', 'actions'];
   public dataSource: MatTableDataSource<User> = new MatTableDataSource<User>();
 
   constructor(

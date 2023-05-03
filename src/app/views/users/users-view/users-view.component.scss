@@ -13,17 +13,22 @@ table {
 
 mat-cell:nth-child(1),
 mat-header-cell:nth-child(1) {
-  flex: 0 0 10%;
+  flex: 0 0 5%;
 }
 
 mat-cell:nth-child(2),
 mat-header-cell:nth-child(2) {
-  flex: 0 0 18%;
+  flex: 0 0 12%;
 }
 
 mat-cell:nth-child(5),
 mat-header-cell:nth-child(5) {
   flex: 0 0 18%;
+}
+
+mat-cell:nth-child(6),
+mat-header-cell:nth-child(6) {
+  flex: 0 0 11%;
 }
 
 mat-table,

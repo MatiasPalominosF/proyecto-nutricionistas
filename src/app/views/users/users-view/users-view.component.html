@@ -11,7 +11,7 @@
     <div class="d-flex align-items-center">
       <div class="col-md-6">
         <mat-form-field>
-          <mat-label>Filter</mat-label>
+          <mat-label>Buscar</mat-label>
           <input
             matInput
             (keyup)="applyFilter($event)"
@@ -110,6 +110,26 @@
           </mat-cell>
         </ng-container>
 
+        <!-- Enabled Column -->
+        <ng-container matColumnDef="enabled">
+          <mat-header-cell *matHeaderCellDef style="white-space: nowrap">
+            Activo
+          </mat-header-cell>
+          <mat-cell
+            *matCellDef="let row"
+            style="padding: 0px"
+            data-label="Activo"
+          >
+            <div *ngIf="row.enabled; else disabled">
+              <span class="badge badge-success">Activo</span>
+            </div>
+            <ng-template #disabled>
+              <span class="badge badge-danger mr-1">Inactivo</span>
+            </ng-template>
+
+          </mat-cell>
+        </ng-container>
+
         <!-- Functionalities Column -->
         <ng-container matColumnDef="functionalities">
           <mat-header-cell *matHeaderCellDef style="white-space: nowrap">
@@ -120,7 +140,7 @@
             style="padding: 0px"
             data-label="Funcionalidades"
           >
-            <button class="btn btn-sm btn-wide btn-outline-secondary mr-1">
+            <button class="btn btn-sm btn-wide btn-outline-primary mr-1">
               <i class="icon i-Eye"></i>
             </button>
           </mat-cell>
