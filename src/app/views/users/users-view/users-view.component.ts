@@ -85,7 +85,13 @@ export class UsersViewComponent implements OnInit, AfterViewInit {
   }
 
   addUser() {
-    const modalRef = this.modalService.open(AddUserComponent, { ariaLabelledBy: 'Modal usuario', windowClass: 'animated fadeInDown my-class', backdrop: 'static' });
+    const modalRef = this.modalService.open(AddUserComponent,
+      {
+        ariaLabelledBy: 'Modal usuario', 
+        windowClass: 'animated fadeInDown my-class', 
+        backdrop: 'static',
+        size: 'lg'
+      });
     modalRef.result.then((result) => {
       if (result) {
         this.toastr.success('Usuario agregado con éxito', 'Nuevo usuario', { timeOut: 3000, closeButton: true, progressBar: true })

@@ -10,33 +10,268 @@
   </button>
 </div>
 <div class="modal-body">
-  <form>
-    <div class="form-group">
-      <label for="picker1">Date picker</label>
-      <div class="input-group">
-        <input
-          id="picker1"
-          class="form-control"
-          placeholder="yyyy-mm-dd"
-          name="dp"
-          ngbDatepicker
-          #dp="ngbDatepicker"
-        />
-        <div class="input-group-append">
-          <button class="btn btn-secondary" (click)="dp.toggle()" type="button">
-            <i class="icon-regular i-Calendar-4"></i>
-          </button>
+  <form-wizard>
+    <wizard-step
+      [title]="'Información básica'"
+      [isValid]="infoUserForm.valid"
+      (onNext)="onStep1Next($event)"
+    >
+      <form [formGroup]="infoUserForm">
+        <div class="row">
+          <div class="form-group col-md-6 mb-3">
+            <label for="name">Nombre*</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              name="name"
+              aria-describedby="name"
+              placeholder="Ingrese nombre"
+              formControlName="name"
+              [ngClass]="{
+                'is-invalid': one.name.touched && one.name.errors
+              }"
+            />
+            <small
+              class="form-text text-muted danger"
+              *ngIf="one.name.touched && one.name.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('name', 'required', infoUserForm)">
+                El nombre es requerido
+              </div>
+            </small>
+          </div>
+          <div class="form-group col-md-6 mb-3">
+            <label for="lastName">Apellido*</label>
+            <input
+              type="text"
+              class="form-control"
+              id="lastName"
+              name="lastName"
+              aria-describedby="lastName"
+              placeholder="Ingrese apellido"
+              formControlName="lastName"
+              [ngClass]="{
+                'is-invalid': one.lastName.touched && one.lastName.errors
+              }"
+            />
+            <small
+              class="form-text text-muted danger"
+              *ngIf="one.lastName.touched && one.lastName.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('lastName', 'required', infoUserForm)">
+                El RUT es requerido
+              </div>
+            </small>
+          </div>
+          <div class="form-group col-md-6 mb-3">
+            <label for="rut">RUT*</label>
+            <input
+              type="text"
+              class="form-control"
+              id="rut"
+              name="rut"
+              (input)="checkRun()"
+              maxlength="12"
+              aria-describedby="email"
+              placeholder="Ingrese RUT"
+              formControlName="rut"
+              [ngClass]="{ 'is-invalid': one.rut.touched && one.rut.errors }"
+            />
+            <small
+              class="form-text text-muted danger"
+              *ngIf="one.rut.touched && one.rut.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('rut', 'required', infoUserForm)">
+                El RUT es requerido
+              </div>
+              <div *ngIf="hasError('rut', 'maxlength', infoUserForm)">
+                Se aceptan como máximo 12 caracteres
+              </div>
+              <div *ngIf="hasError('rut', 'pattern', infoUserForm)">
+                Debe escribir un RUT válido
+              </div>
+              <div *ngIf="hasError('rut', 'verificator', infoUserForm)">
+                El digito verificador no corresponde al rut ingresado
+              </div>
+            </small>
+          </div>
+          <div class="form-group col-md-6 mb-3">
+            <label for="registerNumber"
+              >N.&#176; de registro en superintendencia de salud*
+              <span
+                class="ml-1"
+                ngbPopover="Desde la página www.pagina.cl"
+                triggers="mouseenter:mouseleave"
+                popoverTitle="¿Dónde lo encuentro?"
+                placement="top"
+              >
+                <i class="icon i-Information"></i>
+              </span>
+              <i></i>
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="registerNumber"
+              name="registerNumber"
+              aria-describedby="registerNumber"
+              placeholder="Ingrese número de registro"
+              formControlName="registerNumber"
+              [ngClass]="{
+                'is-invalid':
+                  one.registerNumber.touched && one.registerNumber.errors
+              }"
+            />
+            <small
+              class="form-text text-muted danger"
+              *ngIf="one.registerNumber.touched && one.registerNumber.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('registerNumber', 'required', infoUserForm)">
+                El número es requerido
+              </div>
+            </small>
+          </div>
+          <div class="form-group col-md-12">
+            <label for="address">Dirección*</label>
+            <input
+              type="address"
+              class="form-control"
+              id="address"
+              name="address"
+              placeholder="Ingrese dirección"
+              formControlName="address"
+              [ngClass]="{
+                'is-invalid': one.address.touched && one.address.errors
+              }"
+            />
+            <small
+              class="form-text text-muted danger"
+              *ngIf="one.address.touched && one.address.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('address', 'required', infoUserForm)">
+                La dirección es requerida
+              </div>
+            </small>
+          </div>
         </div>
+      </form>
+    </wizard-step>
+
+    <wizard-step
+      [title]="'Acceso web'"
+      [isValid]="step2Form.valid"
+      (onNext)="onStep2Next($event)"
+    >
+      <form [formGroup]="step2Form">
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="mb-2">Employees</h6>
+            <label class="checkbox checkbox-primary">
+              <input type="checkbox" checked />
+              <span>Designer</span>
+              <span class="checkmark"></span>
+            </label>
+            <label class="checkbox checkbox-secondary">
+              <input type="checkbox" checked />
+              <span>Coder</span>
+              <span class="checkmark"></span>
+            </label>
+            <label class="checkbox checkbox-success">
+              <input type="checkbox" checked />
+              <span>QA</span>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="col-md-6">
+            <h6 class="mb-2">Company age</h6>
+            <label class="radio radio-outline-primary">
+              <input
+                type="radio"
+                name="experience"
+                [value]="1"
+                formControlName="experience"
+              />
+              <span>Less than 1 Year</span>
+              <span class="checkmark"></span>
+            </label>
+            <label class="radio radio-outline-success">
+              <input
+                type="radio"
+                name="experience"
+                [value]="3"
+                formControlName="experience"
+              />
+              <span>1-5 Years</span>
+              <span class="checkmark"></span>
+            </label>
+            <label class="radio radio-outline-warning">
+              <input
+                type="radio"
+                name="experience"
+                [value]="4"
+                formControlName="experience"
+              />
+              <span>5+ Years</span>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+      </form>
+    </wizard-step>
+
+    <wizard-step [title]="'Validación'" (onNext)="onStep3Next($event)">
+      <form #paymentForm="ngForm">
+        <div class="row">
+          <div class="form-group col-md-6 mb-3">
+            <label for="card">Card number</label>
+            <input
+              type="text"
+              class="form-control"
+              id="card"
+              name="card"
+              placeholder="Card Number"
+              [(ngModel)]="data.card"
+            />
+          </div>
+          <div class="form-group col-md-6 mb-3">
+            <label for="exp">Expires at</label>
+            <input
+              type="text"
+              class="form-control"
+              id="exp"
+              name="exp"
+              placeholder="Expires at"
+              [(ngModel)]="data.cardExpiresAt"
+            />
+          </div>
+          <div class="form-group col-md-6 mb-3">
+            <label for="security">Security code</label>
+            <input
+              type="text"
+              class="form-control"
+              id="security"
+              name="exp"
+              placeholder="Security code"
+              [(ngModel)]="data.code"
+            />
+          </div>
+        </div>
+      </form>
+    </wizard-step>
+
+    <wizard-step [title]="'Final'" (onComplete)="onComplete($event)">
+      <div class="text-center mt-4 mb-4">
+        <i class="i-Checked-User text-32 mb-3 text-success d-inline-block"></i>
+        <h5 class="font-weight-light">
+          Thank you! You have completed all the steps.
+        </h5>
       </div>
-    </div>
-  </form>
-</div>
-<div class="modal-footer">
-  <button
-    type="button"
-    class="btn btn-outline-dark btn-rounded"
-    (click)="onSubmit()"
-  >
-    Save
-  </button>
+    </wizard-step>
+  </form-wizard>
 </div>

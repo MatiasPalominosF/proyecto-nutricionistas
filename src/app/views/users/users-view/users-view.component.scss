@@ -7,6 +7,12 @@
   vertical-align: middle;
 }
 
+.center-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .center-no-data {
   display: grid;
   text-align: center;
