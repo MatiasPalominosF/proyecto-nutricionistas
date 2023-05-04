@@ -107,7 +107,7 @@
                 ngbPopover="Desde la página www.pagina.cl"
                 triggers="mouseenter:mouseleave"
                 popoverTitle="¿Dónde lo encuentro?"
-                placement="top"
+                placement="left"
               >
                 <i class="icon i-Information"></i>
               </span>
@@ -136,10 +136,44 @@
               </div>
             </small>
           </div>
-          <div class="form-group col-md-12">
+          <div class="form-group col-md-6">
+            <label for="phone">Celular*</label>
+            <input
+              type="tel"
+              pattern="[0-9]*"
+              maxlength="8"
+              class="form-control"
+              id="phone"
+              name="phone"
+              placeholder="Ingrese celular"
+              formControlName="phone"
+              [ngClass]="{
+                'is-invalid': one.phone.touched && one.phone.errors
+              }"
+            />
+            <small
+              class="form-text text-muted danger"
+              *ngIf="one.phone.touched && one.phone.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('phone', 'required', infoUserForm)">
+                El celular es requerido
+              </div>
+              <div *ngIf="hasError('phone', 'maxlength', infoUserForm)">
+                Se aceptan como máximo 8 números
+              </div>
+              <div *ngIf="hasError('phone', 'minlength', infoUserForm)">
+                Se aceptan como mínimo 8 números
+              </div>
+              <div *ngIf="hasError('phone', 'pattern', infoUserForm)">
+                Solo se aceptan números
+              </div>
+            </small>
+          </div>
+          <div class="form-group col-md-6">
             <label for="address">Dirección*</label>
             <input
-              type="address"
+              type="text"
               class="form-control"
               id="address"
               name="address"
@@ -165,101 +199,92 @@
 
     <wizard-step
       [title]="'Acceso web'"
-      [isValid]="step2Form.valid"
+      [isValid]="infoAccessForm.valid"
       (onNext)="onStep2Next($event)"
     >
-      <form [formGroup]="step2Form">
+      <form [formGroup]="infoAccessForm">
         <div class="row">
-          <div class="col-md-6">
-            <h6 class="mb-2">Employees</h6>
-            <label class="checkbox checkbox-primary">
-              <input type="checkbox" checked />
-              <span>Designer</span>
-              <span class="checkmark"></span>
-            </label>
-            <label class="checkbox checkbox-secondary">
-              <input type="checkbox" checked />
-              <span>Coder</span>
-              <span class="checkmark"></span>
-            </label>
-            <label class="checkbox checkbox-success">
-              <input type="checkbox" checked />
-              <span>QA</span>
-              <span class="checkmark"></span>
-            </label>
-          </div>
-          <div class="col-md-6">
-            <h6 class="mb-2">Company age</h6>
-            <label class="radio radio-outline-primary">
-              <input
-                type="radio"
-                name="experience"
-                [value]="1"
-                formControlName="experience"
-              />
-              <span>Less than 1 Year</span>
-              <span class="checkmark"></span>
-            </label>
-            <label class="radio radio-outline-success">
-              <input
-                type="radio"
-                name="experience"
-                [value]="3"
-                formControlName="experience"
-              />
-              <span>1-5 Years</span>
-              <span class="checkmark"></span>
-            </label>
-            <label class="radio radio-outline-warning">
-              <input
-                type="radio"
-                name="experience"
-                [value]="4"
-                formControlName="experience"
-              />
-              <span>5+ Years</span>
-              <span class="checkmark"></span>
-            </label>
+          <div class="col-md-12 form-group">
+            <label for="email">Email*</label>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              name="email"
+              aria-describedby="email"
+              placeholder="Ingrese email"
+              formControlName="email"
+              [ngClass]="{
+                'is-invalid': two.email.touched && two.email.errors
+              }"
+            />
+            <small
+              class="form-text text-muted danger"
+              *ngIf="two.email.touched && two.email.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('email', 'required', infoAccessForm)">
+                El email es requerido
+              </div>
+              <div *ngIf="hasError('email', 'email', infoAccessForm)">
+                Debe ingresar un email válido
+              </div>
+            </small>
           </div>
         </div>
       </form>
     </wizard-step>
 
-    <wizard-step [title]="'Validación'" (onNext)="onStep3Next($event)">
-      <form #paymentForm="ngForm">
+    <wizard-step
+      [title]="'Acceso web'"
+      [isValid]="checkboxesForm.valid"
+      (onNext)="onStep2Next($event)"
+    >
+      <form [formGroup]="checkboxesForm">
+        <div class="row d-flex justify-content-center">
+          <div class="col-md-3">
+            <h6 class="mb-4">Funcionalidades</h6>
+          </div>
+        </div>
         <div class="row">
-          <div class="form-group col-md-6 mb-3">
-            <label for="card">Card number</label>
-            <input
-              type="text"
-              class="form-control"
-              id="card"
-              name="card"
-              placeholder="Card Number"
-              [(ngModel)]="data.card"
-            />
-          </div>
-          <div class="form-group col-md-6 mb-3">
-            <label for="exp">Expires at</label>
-            <input
-              type="text"
-              class="form-control"
-              id="exp"
-              name="exp"
-              placeholder="Expires at"
-              [(ngModel)]="data.cardExpiresAt"
-            />
-          </div>
-          <div class="form-group col-md-6 mb-3">
-            <label for="security">Security code</label>
-            <input
-              type="text"
-              class="form-control"
-              id="security"
-              name="exp"
-              placeholder="Security code"
-              [(ngModel)]="data.code"
-            />
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-2">
+                <label class="checkbox checkbox-success">
+                  <input type="checkbox" formControlName="casino" />
+                  <span>Registro SAN</span>
+                  <span class="checkmark"></span>
+                </label>
+              </div>
+              <div class="col-md-3">
+                <label class="checkbox checkbox-success">
+                  <input type="checkbox" formControlName="aps" />
+                  <span>Atención primaria en salud</span>
+                  <span class="checkmark"></span>
+                </label>
+              </div>
+              <div class="col-md-2">
+                <label class="checkbox checkbox-success">
+                  <input type="checkbox" formControlName="clinic" />
+                  <span>Salud clínica</span>
+                  <span class="checkmark"></span>
+                </label>
+              </div>
+              <div class="col-md-2">
+                <label class="checkbox checkbox-success">
+                  <input type="checkbox" formControlName="edMaterial" />
+                  <span>Material educativo</span>
+                  <span class="checkmark"></span>
+                </label>
+              </div>
+              <div class="col-md-3">
+                <label class="checkbox checkbox-success">
+                  <input type="checkbox" formControlName="nutrLabeling" />
+                  <span>Etiquetado nutricional</span>
+                  <span class="checkmark"></span>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
       </form>

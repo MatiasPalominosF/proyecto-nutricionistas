@@ -1,3 +1,5 @@
+import { Functionality } from "./functionalities.interface";
+
 export interface User {
     uid?: string;
     password?: string;
@@ -12,7 +14,7 @@ export interface User {
     photoURL?: string;
     phone?: string;
     address?: string;
-    functionalities?: string[];
+    functionalities?: Functionality;
     socialProfiles?: {
         facebook?: string;
         twitter?: string;
