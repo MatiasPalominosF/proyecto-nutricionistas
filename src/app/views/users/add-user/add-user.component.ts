@@ -3,6 +3,9 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Functionality } from 'src/app/shared/models/functionalities.interface';
 import { User } from 'src/app/shared/models/user.interface';
+import { AuthService } from 'src/app/shared/services/auth/auth.service';
+import { EncryptionService } from 'src/app/shared/services/encryption/encryption.service';
+import { UserService } from 'src/app/shared/services/user/user.service';
 
 @Component({
   selector: 'app-add-user',
@@ -20,7 +23,10 @@ export class AddUserComponent implements OnInit {
   public submittedOne: boolean = false;
   constructor(
     public activeModal: NgbActiveModal,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private encryptionService: EncryptionService,
+    private authService: AuthService,
+    private userService: UserService,
   ) { }
 
   ngOnInit(): void {
@@ -121,7 +127,7 @@ export class AddUserComponent implements OnInit {
     }
   }
 
-  onComplete(e) {
+  async onComplete(e) {
     let functionalities: Functionality = {
       aps: this.threeValue['aps'],
       casino: this.threeValue['casino'],
@@ -130,8 +136,10 @@ export class AddUserComponent implements OnInit {
       nutrLabeling: this.threeValue['nutrLabeling'],
     };
 
+    const password = this.encryptionService.generateRandom(8);
     const user: User = {
       name: this.oneValue['name'],
+      password: password,
       lastName: this.oneValue['lastName'],
       rut: this.oneValue['rut'],
       phone: this.oneValue['phone'],
@@ -144,8 +152,29 @@ export class AddUserComponent implements OnInit {
       functionalities: functionalities
     }
 
-    console.log(user);
 
-
+    await this.authService.doRegister(user).then(data => {
+      //delete data['password'];
+      this.userService.createUser(data)
+        .then(() => {
+          console.info('Usuario creado');
+          // this.toastr.success('Usuario creado', 'Registrar', { timeOut: 3000, closeButton: true, progressBar: true });
+          // this.router.navigateByUrl('/sessions/signin');
+          // this.loading = false;
+        })
+        .catch(error => {
+          console.error("Error al crear el usuario ", error);
+          // this.loading = false;
+          // this.loadingText = 'Reintentar registro';
+        })
+    })
+      .catch(error => {
+        if (error.code === 'auth/email-already-in-use') {
+          // this.toastr.error('Correo ya registrado', 'Registrar', { timeOut: 3000, closeButton: true, progressBar: true })
+        } else {
+          console.error("Error ", error);
+        }
+        // this.loading = false;
+      })
   }
 }
