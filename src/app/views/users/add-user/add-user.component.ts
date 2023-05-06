@@ -4,6 +4,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Functionality } from 'src/app/shared/models/functionalities.interface';
 import { User } from 'src/app/shared/models/user.interface';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
+import { EmailService } from 'src/app/shared/services/email/email.service';
 import { EncryptionService } from 'src/app/shared/services/encryption/encryption.service';
 import { UserService } from 'src/app/shared/services/user/user.service';
 
@@ -21,12 +22,14 @@ export class AddUserComponent implements OnInit {
   public infoUserForm: FormGroup;
   public checkboxesForm: FormGroup;
   public submittedOne: boolean = false;
+  
   constructor(
     public activeModal: NgbActiveModal,
     private fb: FormBuilder,
     private encryptionService: EncryptionService,
     private authService: AuthService,
     private userService: UserService,
+    private emailService: EmailService,
   ) { }
 
   ngOnInit(): void {
@@ -154,7 +157,18 @@ export class AddUserComponent implements OnInit {
 
 
     await this.authService.doRegister(user).then(data => {
-      //delete data['password'];
+      const message = 'test';
+      const url = "www.nutricionistas.websavvy.cl";
+      this.emailService.sendEmail(data, message, url).subscribe(
+        response => {
+          console.log("Correo enviado ", response);
+        },
+        error => {
+          console.log("Error al enviar el correo ", error);
+        }
+
+      );
+      delete data['password'];
       this.userService.createUser(data)
         .then(() => {
           console.info('Usuario creado');

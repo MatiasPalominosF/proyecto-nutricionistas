@@ -19,6 +19,8 @@ export class UsersViewComponent implements OnInit, AfterViewInit {
 
   public displayedColumns: string[] = ['position', 'rut', 'name', 'phone', 'email', 'enabled', 'functionalities', 'actions'];
   public dataSource: MatTableDataSource<User> = new MatTableDataSource<User>();
+  public loading: boolean = false;
+
 
   constructor(
     private modalService: NgbModal,
@@ -31,8 +33,10 @@ export class UsersViewComponent implements OnInit, AfterViewInit {
   }
 
   getData() {
+    this.loading = true;
     this.userService.getAllUsers().subscribe(users => {
       this.dataSource.data = users;
+      this.loading = false;
     })
   }
 
@@ -87,8 +91,8 @@ export class UsersViewComponent implements OnInit, AfterViewInit {
   addUser() {
     const modalRef = this.modalService.open(AddUserComponent,
       {
-        ariaLabelledBy: 'Modal usuario', 
-        windowClass: 'animated fadeInDown my-class', 
+        ariaLabelledBy: 'Modal usuario',
+        windowClass: 'animated fadeInDown my-class',
         backdrop: 'static',
         size: 'lg'
       });
