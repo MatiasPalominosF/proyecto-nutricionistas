@@ -10,7 +10,7 @@
   </button>
 </div>
 <div class="modal-body">
-  <form-wizard>
+  <form-wizard [isCompleted]="isCompleted">
     <wizard-step
       [title]="'Información básica'"
       [isValid]="infoUserForm.valid"
@@ -238,65 +238,68 @@
     <wizard-step
       [title]="'Funcionalidades'"
       [isValid]="checkboxesForm.valid"
-      (onNext)="onStep2Next($event)"
+      (onComplete)="onStep3Next($event)"
     >
-      <form [formGroup]="checkboxesForm">
-        <div class="row d-flex justify-content-center">
-          <div class="col-md-3">
-            <h6 class="mb-4">Funcionalidades</h6>
+      <ng-container *ngIf="!isValidating; else elseBlock">
+        <form [formGroup]="checkboxesForm">
+          <div class="row d-flex justify-content-center">
+            <div class="col-md-3">
+              <h6 class="mb-4">Funcionalidades</h6>
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-2">
-                <label class="checkbox checkbox-success">
-                  <input type="checkbox" formControlName="casino" />
-                  <span>Registro SAN</span>
-                  <span class="checkmark"></span>
-                </label>
-              </div>
-              <div class="col-md-3">
-                <label class="checkbox checkbox-success">
-                  <input type="checkbox" formControlName="aps" />
-                  <span>Atención primaria en salud</span>
-                  <span class="checkmark"></span>
-                </label>
-              </div>
-              <div class="col-md-2">
-                <label class="checkbox checkbox-success">
-                  <input type="checkbox" formControlName="clinic" />
-                  <span>Salud clínica</span>
-                  <span class="checkmark"></span>
-                </label>
-              </div>
-              <div class="col-md-2">
-                <label class="checkbox checkbox-success">
-                  <input type="checkbox" formControlName="edMaterial" />
-                  <span>Material educativo</span>
-                  <span class="checkmark"></span>
-                </label>
-              </div>
-              <div class="col-md-3">
-                <label class="checkbox checkbox-success">
-                  <input type="checkbox" formControlName="nutrLabeling" />
-                  <span>Etiquetado nutricional</span>
-                  <span class="checkmark"></span>
-                </label>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-2">
+                  <label class="checkbox checkbox-success">
+                    <input type="checkbox" formControlName="casino" />
+                    <span>Registro SAN</span>
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+                <div class="col-md-3">
+                  <label class="checkbox checkbox-success">
+                    <input type="checkbox" formControlName="aps" />
+                    <span>Atención primaria en salud</span>
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+                <div class="col-md-2">
+                  <label class="checkbox checkbox-success">
+                    <input type="checkbox" formControlName="clinic" />
+                    <span>Salud clínica</span>
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+                <div class="col-md-2">
+                  <label class="checkbox checkbox-success">
+                    <input type="checkbox" formControlName="edMaterial" />
+                    <span>Material educativo</span>
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+                <div class="col-md-3">
+                  <label class="checkbox checkbox-success">
+                    <input type="checkbox" formControlName="nutrLabeling" />
+                    <span>Etiquetado nutricional</span>
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </form>
-    </wizard-step>
-
-    <wizard-step [title]="'Final'" (onComplete)="onComplete($event)">
-      <div class="text-center mt-4 mb-4">
-        <i class="i-Checked-User text-32 mb-3 text-success d-inline-block"></i>
-        <h5 class="font-weight-light">
-          Thank you! You have completed all the steps.
-        </h5>
-      </div>
+        </form>
+      </ng-container>
+      <ng-template #elseBlock
+        ><div class="text-center mt-4 mb-4">
+          <i
+            class="i-Checked-User text-32 mb-3 text-success d-inline-block"
+          ></i>
+          <h5 class="font-weight-light loading-text">
+            ¡Gracias! Validando datos ...
+          </h5>
+        </div></ng-template
+      >
     </wizard-step>
   </form-wizard>
 </div>

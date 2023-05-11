@@ -1,4 +1,4 @@
-import { Component, AfterContentInit, ContentChildren, QueryList, EventEmitter, Output } from '@angular/core';
+import { Component, AfterContentInit, ContentChildren, QueryList, EventEmitter, Output, Input } from '@angular/core';
 import { WizardStepComponent } from '../wizard-step/wizard-step.component';
 
 @Component({
@@ -10,9 +10,10 @@ export class WizardComponent implements AfterContentInit {
 
   @ContentChildren(WizardStepComponent)
   wizardSteps: QueryList<WizardStepComponent>;
+  @Input() isCompleted: boolean = false;
 
   private _steps: Array<WizardStepComponent> = [];
-  private _isCompleted = false;
+  //private _isCompleted = false;
 
   @Output()
   onStepChanged: EventEmitter<WizardStepComponent> = new EventEmitter<WizardStepComponent>();
@@ -28,8 +29,8 @@ export class WizardComponent implements AfterContentInit {
     return this._steps.filter(step => !step.hidden);
   }
 
-  get isCompleted(): boolean {
-    return this._isCompleted;
+  get getIsCompleted(): boolean {
+    return this.isCompleted;
   }
 
   get activeStep(): WizardStepComponent {
@@ -57,7 +58,7 @@ export class WizardComponent implements AfterContentInit {
   }
 
   public goToStep(step: WizardStepComponent): void {
-    if (!this.isCompleted) {
+    if (!this.getIsCompleted) {
       this.activeStep = step;
     }
   }
@@ -82,7 +83,7 @@ export class WizardComponent implements AfterContentInit {
 
   public complete(): void {
     this.activeStep.onComplete.emit();
-    this._isCompleted = true;
+    this.isCompleted = true;
   }
 
 }

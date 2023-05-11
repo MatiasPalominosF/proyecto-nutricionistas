@@ -29,37 +29,83 @@ exports.sendEmail = functions.https.onRequest((req, res) => {
       !role ||
       !url
     ) {
-      res.status(400).send("Missing data");
+      const response = { message: "Faltan datos" };
+      cors()(req, res, () => {
+        res.status(400).json(response);
+      });
       return;
     }
 
     if (role === "admin") {
       const codeHtml = `
       <html>
-        <body style="background-color: #f5f5f5; font-family: sans-serif;">
-          <table style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-collapse: collapse; border: 1px solid #cccccc;">
-            <tr>
-              <td style="padding: 40px 20px; text-align: center; background-color: #663399;">
-                <h1 style="color: #ffffff; font-size: 28px; margin-top: 0;">¡Bienvenido ${name} a WebSavvy!</h1>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding: 20px;">
-                <p style="font-size: 16px; line-height: 1.5;">Gracias por unirte a WebSavvy. Estamos muy contentos de tenerte en nuestra comunidad.</p>
-                <p style="font-size: 16px; line-height: 1.5;">Para terminar el registro, por favor haz clic en el botón de abajo:</p>
-                <p style="text-align: center;">
-                  <a href="https://www.nutricionistas.websavvy.cl" style="background-color: #663399; border-radius: 4px; color: #ffffff; display: inline-block; font-size: 16px; font-weight: bold; padding: 12px 24px; text-decoration: none;">Terminar Registro</a>
-                </p>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding: 20px; background-color: #f1f1f1; text-align: center;">
-                <p style="color: #666666; font-size: 14px; margin-top: 0;">Si tienes algún problema o pregunta, por favor contáctanos en contacto@websavvy.cl</p>
-              </td>
-            </tr>
-          </table>
-        </body>
-      </html>
+  <head>
+    <style>
+    .logo {
+      display: block;
+      width: 70px;
+      height: auto;
+      margin: 20px;
+      display: inline-block; 
+      vertical-align: middle;
+    }
+    .button {
+      background-color: #663399;
+      border-radius: 4px;
+      color: #ffffff !important;
+      display: inline-block;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 12px 24px;
+      text-decoration: none;
+    }
+
+    .password-box {
+      border: 1px solid #cccccc;
+      border-radius: 4px;
+      padding: 10px;
+      margin-bottom: 20px;
+      font-size: 16px;
+      line-height: 1.5;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .password-label {
+      font-size: 16px;
+      line-height: 1.5;
+      margin-bottom: 5px;
+      display: block;
+    }
+    </style>
+  </head>
+  <body style="background-color: #f5f5f5; font-family: sans-serif;">
+    <table style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-collapse: collapse; border: 1px solid #cccccc;">
+      <tr>
+       <td style="padding: 40px 20px; text-align: center; background-color: #663399; vertical-align: middle;">
+  <img class="logo" src="https://firebasestorage.googleapis.com/v0/b/nutricionistas-proyecto.appspot.com/o/logo%2Flogo.webp?alt=media&token=d7d62f7f-5b2b-4a93-8c65-6d0e684dc467" alt="Logo">
+  <h1 style="color: #ffffff; font-size: 28px; margin-top: 0;">¡Bienvenido ${name} a WebSavvy!</h1>
+</td>
+
+      </tr>
+      <tr>
+        <td style="padding: 20px;">
+          <p style="font-size: 16px; line-height: 1.5;">Gracias por unirte a WebSavvy. Estamos muy contentos de tenerte en nuestra comunidad.</p>
+          <p style="font-size: 16px; line-height: 1.5;">Para completar tu registro, presiona el botón de abajo y coloca la contraseña provisional:</p>
+          <input class="password-box" type="text" name="password" id="password" value="${password}" readonly>
+          <p style="text-align: center;">
+            <a href="https://www.nutricionistas.websavvy.cl" class="button">Terminar Registro</a>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 20px; background-color: #f1f1f1; text-align: center;">
+          <p style="color: #666666; font-size: 14px; margin-top: 0;">Si tienes algún problema o pregunta, por favor contáctanos en contacto@websavvy.cl</p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
       `;
       const mailOptions = {
         from: {

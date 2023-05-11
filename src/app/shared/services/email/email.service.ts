@@ -18,7 +18,6 @@ export class EmailService {
     const { name, lastName, email, password, role } = user;
     const data = { name, lastName, email, password, role, message, url };
 
-    console.log(data);
     return this.http.post<any>(`${environment.apiUrl}/sendEmail`, data, { headers: this.headers });
   }
 }

@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
+import { WizardComponent } from 'src/app/shared/components/form-wizard/wizard/wizard.component';
 import { Functionality } from 'src/app/shared/models/functionalities.interface';
 import { User } from 'src/app/shared/models/user.interface';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
@@ -14,15 +16,14 @@ import { UserService } from 'src/app/shared/services/user/user.service';
   styleUrls: ['./add-user.component.scss']
 })
 export class AddUserComponent implements OnInit {
-  isCompleted: boolean;
-  data: any = {
-    email: ''
-  };
+  @Output() passEntry: EventEmitter<any> = new EventEmitter();
+
   public infoAccessForm: FormGroup;
   public infoUserForm: FormGroup;
   public checkboxesForm: FormGroup;
   public submittedOne: boolean = false;
-  
+  private _isValidating: boolean = false;
+
   constructor(
     public activeModal: NgbActiveModal,
     private fb: FormBuilder,
@@ -30,6 +31,7 @@ export class AddUserComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private emailService: EmailService,
+    private toastr: ToastrService,
   ) { }
 
   ngOnInit(): void {
@@ -57,6 +59,14 @@ export class AddUserComponent implements OnInit {
 
   onSubmit(): void {
 
+  }
+
+  get isCompleted(): boolean {
+    return this._isValidating;
+  }
+
+  get isValidating(): boolean {
+    return this._isValidating;
   }
 
   checkVerificatorDigit(control: AbstractControl) {
@@ -122,15 +132,19 @@ export class AddUserComponent implements OnInit {
     if (this.infoUserForm.invalid) {
       return;
     }
-
   }
   onStep2Next(e) {
     if (this.infoAccessForm.invalid) {
       return;
     }
   }
+  async onStep3Next(e) {
+    if (this.infoAccessForm.invalid) {
+      return;
+    }
 
-  async onComplete(e) {
+    this._isValidating = true;
+
     let functionalities: Functionality = {
       aps: this.threeValue['aps'],
       casino: this.threeValue['casino'],
@@ -162,9 +176,11 @@ export class AddUserComponent implements OnInit {
       this.emailService.sendEmail(data, message, url).subscribe(
         response => {
           console.log("Correo enviado ", response);
+          this.toastr.info('Correo enviado', 'Correo', { timeOut: 3000, closeButton: true, progressBar: true });
         },
         error => {
           console.log("Error al enviar el correo ", error);
+          this.toastr.error('Error al enviar el correo', 'Correo', { timeOut: 3000, closeButton: true, progressBar: true });
         }
 
       );
@@ -172,23 +188,25 @@ export class AddUserComponent implements OnInit {
       this.userService.createUser(data)
         .then(() => {
           console.info('Usuario creado');
-          // this.toastr.success('Usuario creado', 'Registrar', { timeOut: 3000, closeButton: true, progressBar: true });
-          // this.router.navigateByUrl('/sessions/signin');
-          // this.loading = false;
+          this.passEntry.emit(true);
+          this.activeModal.close(true);
+          this._isValidating = false;
         })
         .catch(error => {
           console.error("Error al crear el usuario ", error);
-          // this.loading = false;
-          // this.loadingText = 'Reintentar registro';
+          this.toastr.error('Error al crear el usuario', 'Registrar', { timeOut: 3000, closeButton: true, progressBar: true });
+          this._isValidating = false;
         })
     })
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {
-          // this.toastr.error('Correo ya registrado', 'Registrar', { timeOut: 3000, closeButton: true, progressBar: true })
+          this.toastr.error('Correo ya registrado', 'Registrar', { timeOut: 3000, closeButton: true, progressBar: true })
+          this._isValidating = false;
         } else {
           console.error("Error ", error);
         }
-        // this.loading = false;
       })
   }
+
+
 }
