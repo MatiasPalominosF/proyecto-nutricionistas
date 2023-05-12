@@ -8,9 +8,11 @@ import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 
 const adminRoutes: Routes = [
   {
-    path: 'dashboard',
-    loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
+    path: 'dashboard', loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule), canActivateChild: [AuthGuard]
   },
+  {
+    path: 'users', loadChildren: () => import('./views/users/users.module').then(m => m.UsersModule), canActivateChild: [AuthGuard]
+  }
 ];
 
 const routes: Routes = [
@@ -54,6 +56,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule],
-  providers: [{ provide: LocationStrategy, useClass: PathLocationStrategy }] 
+  providers: [{ provide: LocationStrategy, useClass: PathLocationStrategy }]
 })
 export class AppRoutingModule { }

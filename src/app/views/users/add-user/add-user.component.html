@@ -1,0 +1,305 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Añadir nuevo usuario</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form-wizard [isCompleted]="isCompleted">
+    <wizard-step
+      [title]="'Información básica'"
+      [isValid]="infoUserForm.valid"
+      (onNext)="onStep1Next($event)"
+    >
+      <form [formGroup]="infoUserForm">
+        <div class="row">
+          <div class="form-group col-md-6 mb-3">
+            <label for="name">Nombre*</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              name="name"
+              aria-describedby="name"
+              placeholder="Ingrese nombre"
+              formControlName="name"
+              [ngClass]="{
+                'is-invalid': one.name.touched && one.name.errors
+              }"
+            />
+            <small
+              class="form-text text-muted danger"
+              *ngIf="one.name.touched && one.name.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('name', 'required', infoUserForm)">
+                El nombre es requerido
+              </div>
+            </small>
+          </div>
+          <div class="form-group col-md-6 mb-3">
+            <label for="lastName">Apellido*</label>
+            <input
+              type="text"
+              class="form-control"
+              id="lastName"
+              name="lastName"
+              aria-describedby="lastName"
+              placeholder="Ingrese apellido"
+              formControlName="lastName"
+              [ngClass]="{
+                'is-invalid': one.lastName.touched && one.lastName.errors
+              }"
+            />
+            <small
+              class="form-text text-muted danger"
+              *ngIf="one.lastName.touched && one.lastName.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('lastName', 'required', infoUserForm)">
+                El RUT es requerido
+              </div>
+            </small>
+          </div>
+          <div class="form-group col-md-6 mb-3">
+            <label for="rut">RUT*</label>
+            <input
+              type="text"
+              class="form-control"
+              id="rut"
+              name="rut"
+              (input)="checkRun()"
+              maxlength="12"
+              aria-describedby="email"
+              placeholder="Ingrese RUT"
+              formControlName="rut"
+              [ngClass]="{ 'is-invalid': one.rut.touched && one.rut.errors }"
+            />
+            <small
+              class="form-text text-muted danger"
+              *ngIf="one.rut.touched && one.rut.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('rut', 'required', infoUserForm)">
+                El RUT es requerido
+              </div>
+              <div *ngIf="hasError('rut', 'maxlength', infoUserForm)">
+                Se aceptan como máximo 12 caracteres
+              </div>
+              <div *ngIf="hasError('rut', 'pattern', infoUserForm)">
+                Debe escribir un RUT válido
+              </div>
+              <div *ngIf="hasError('rut', 'verificator', infoUserForm)">
+                El digito verificador no corresponde al rut ingresado
+              </div>
+            </small>
+          </div>
+          <div class="form-group col-md-6 mb-3">
+            <label for="registerNumber"
+              >N.&#176; de registro en superintendencia de salud*
+              <span
+                class="ml-1"
+                ngbPopover="Desde la página www.pagina.cl"
+                triggers="mouseenter:mouseleave"
+                popoverTitle="¿Dónde lo encuentro?"
+                placement="left"
+              >
+                <i class="icon i-Information"></i>
+              </span>
+              <i></i>
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="registerNumber"
+              name="registerNumber"
+              aria-describedby="registerNumber"
+              placeholder="Ingrese número de registro"
+              formControlName="registerNumber"
+              [ngClass]="{
+                'is-invalid':
+                  one.registerNumber.touched && one.registerNumber.errors
+              }"
+            />
+            <small
+              class="form-text text-muted danger"
+              *ngIf="one.registerNumber.touched && one.registerNumber.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('registerNumber', 'required', infoUserForm)">
+                El número es requerido
+              </div>
+            </small>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="phone">Celular*</label>
+            <input
+              type="tel"
+              pattern="[0-9]*"
+              maxlength="9"
+              class="form-control"
+              id="phone"
+              name="phone"
+              placeholder="Ingrese celular"
+              formControlName="phone"
+              [ngClass]="{
+                'is-invalid': one.phone.touched && one.phone.errors
+              }"
+            />
+            <small
+              class="form-text text-muted danger"
+              *ngIf="one.phone.touched && one.phone.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('phone', 'required', infoUserForm)">
+                El celular es requerido
+              </div>
+              <div *ngIf="hasError('phone', 'maxlength', infoUserForm)">
+                Se aceptan como máximo 8 números
+              </div>
+              <div *ngIf="hasError('phone', 'minlength', infoUserForm)">
+                Se aceptan como mínimo 8 números
+              </div>
+              <div *ngIf="hasError('phone', 'pattern', infoUserForm)">
+                Solo se aceptan números
+              </div>
+            </small>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="address">Dirección*</label>
+            <input
+              type="text"
+              class="form-control"
+              id="address"
+              name="address"
+              placeholder="Ingrese dirección"
+              formControlName="address"
+              [ngClass]="{
+                'is-invalid': one.address.touched && one.address.errors
+              }"
+            />
+            <small
+              class="form-text text-muted danger"
+              *ngIf="one.address.touched && one.address.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('address', 'required', infoUserForm)">
+                La dirección es requerida
+              </div>
+            </small>
+          </div>
+        </div>
+      </form>
+    </wizard-step>
+
+    <wizard-step
+      [title]="'Acceso web'"
+      [isValid]="infoAccessForm.valid"
+      (onNext)="onStep2Next($event)"
+    >
+      <form [formGroup]="infoAccessForm">
+        <div class="row">
+          <div class="col-md-12 form-group">
+            <label for="email">Email*</label>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              name="email"
+              aria-describedby="email"
+              placeholder="Ingrese email"
+              formControlName="email"
+              [ngClass]="{
+                'is-invalid': two.email.touched && two.email.errors
+              }"
+            />
+            <small
+              class="form-text text-muted danger"
+              *ngIf="two.email.touched && two.email.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('email', 'required', infoAccessForm)">
+                El email es requerido
+              </div>
+              <div *ngIf="hasError('email', 'email', infoAccessForm)">
+                Debe ingresar un email válido
+              </div>
+            </small>
+          </div>
+        </div>
+      </form>
+    </wizard-step>
+
+    <wizard-step
+      [title]="'Funcionalidades'"
+      [isValid]="checkboxesForm.valid"
+      (onComplete)="onStep3Next($event)"
+    >
+      <ng-container *ngIf="!isValidating; else elseBlock">
+        <form [formGroup]="checkboxesForm">
+          <div class="row d-flex justify-content-center">
+            <div class="col-md-3">
+              <h6 class="mb-4">Funcionalidades</h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-2">
+                  <label class="checkbox checkbox-success">
+                    <input type="checkbox" formControlName="casino" />
+                    <span>Registro SAN</span>
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+                <div class="col-md-3">
+                  <label class="checkbox checkbox-success">
+                    <input type="checkbox" formControlName="aps" />
+                    <span>Atención primaria en salud</span>
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+                <div class="col-md-2">
+                  <label class="checkbox checkbox-success">
+                    <input type="checkbox" formControlName="clinic" />
+                    <span>Salud clínica</span>
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+                <div class="col-md-2">
+                  <label class="checkbox checkbox-success">
+                    <input type="checkbox" formControlName="edMaterial" />
+                    <span>Material educativo</span>
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+                <div class="col-md-3">
+                  <label class="checkbox checkbox-success">
+                    <input type="checkbox" formControlName="nutrLabeling" />
+                    <span>Etiquetado nutricional</span>
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </ng-container>
+      <ng-template #elseBlock
+        ><div class="text-center mt-4 mb-4">
+          <i
+            class="i-Checked-User text-32 mb-3 text-success d-inline-block"
+          ></i>
+          <h5 class="font-weight-light loading-text">
+            ¡Gracias! Validando datos ...
+          </h5>
+        </div>
+      </ng-template>
+    </wizard-step>
+  </form-wizard>
+</div>

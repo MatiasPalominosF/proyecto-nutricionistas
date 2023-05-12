@@ -49,3 +49,5 @@ Thumbs.db
 public/
 
 credentials.ts
+
+functions/firebase-debug.log

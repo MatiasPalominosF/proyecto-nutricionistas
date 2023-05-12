@@ -10,5 +10,6 @@ export const environment = {
     messagingSenderId: credentials.firebase.messagingSenderId,
     appId: credentials.firebase.appId,
     measurementId: credentials.firebase.measurementId
-  }
+  },
+  apiUrl: credentials.apiUrl,
 };

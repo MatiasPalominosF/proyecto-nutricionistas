@@ -1,0 +1,198 @@
+<div class="breadcrumb">
+  <h1>Gestión usuarios</h1>
+  <ul>
+    <li><a href="">Dashboard</a></li>
+    <li>Usuarios</li>
+  </ul>
+</div>
+<div class="separator-breadcrumb border-top"></div>
+<div class="row">
+  <div class="col-sm-12 col-md-10 col-lg-12">
+    <div class="d-flex align-items-center">
+      <div class="col-md-6">
+        <mat-form-field>
+          <mat-label>Buscar</mat-label>
+          <input
+            matInput
+            (keyup)="applyFilter($event)"
+            placeholder="Ex. Mia"
+            #input
+          />
+        </mat-form-field>
+      </div>
+      <div class="col-md-6 text-right">
+        <button
+          (click)="addUser()"
+          type="button"
+          class="btn btn-outline-primary m-1"
+        >
+          Añadir usuario
+        </button>
+      </div>
+    </div>
+    <div class="mat-elevation-z8">
+      <mat-table mat-table [dataSource]="dataSource" matSort>
+        <!-- Position Column -->
+        <ng-container matColumnDef="position">
+          <mat-header-cell *matHeaderCellDef style="white-space: nowrap">
+            N&#176;
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row; let i = index" data-label="N&#176;">
+            {{ paginator.pageIndex * paginator.pageSize + i + 1 }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- RUT Column -->
+        <ng-container matColumnDef="rut">
+          <mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            style="white-space: nowrap"
+          >
+            RUT
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row" style="padding: 0px" data-label="RUT">
+            {{ row.rut }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            style="white-space: nowrap"
+          >
+            Nombre
+          </mat-header-cell>
+          <mat-cell
+            *matCellDef="let row"
+            style="padding: 0px"
+            data-label="Nombre"
+          >
+            {{ row.name + " " + row.lastName }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Phone Column -->
+        <ng-container matColumnDef="phone">
+          <mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            style="white-space: nowrap"
+          >
+            Contacto
+          </mat-header-cell>
+          <mat-cell
+            *matCellDef="let row"
+            style="padding: 0px"
+            data-label="Contacto"
+          >
+            +56{{ row.phone }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Email Column -->
+        <ng-container matColumnDef="email">
+          <mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            style="white-space: nowrap"
+          >
+            Email
+          </mat-header-cell>
+          <mat-cell
+            *matCellDef="let row"
+            style="padding: 0px"
+            data-label="Email"
+          >
+            {{ row.email }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Enabled Column -->
+        <ng-container matColumnDef="enabled">
+          <mat-header-cell *matHeaderCellDef style="white-space: nowrap">
+            Activo
+          </mat-header-cell>
+          <mat-cell
+            *matCellDef="let row"
+            style="padding: 0px"
+            data-label="Activo"
+          >
+            <div *ngIf="row.enabled; else disabled">
+              <span class="badge badge-success">Activo</span>
+            </div>
+            <ng-template #disabled>
+              <span class="badge badge-danger mr-1">Inactivo</span>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Functionalities Column -->
+        <ng-container matColumnDef="functionalities">
+          <mat-header-cell *matHeaderCellDef style="white-space: nowrap">
+            Funcionalidades
+          </mat-header-cell>
+          <mat-cell
+            *matCellDef="let row"
+            style="padding: 0px"
+            data-label="Funcionalidades"
+          >
+            <button
+              (click)="showFunctionalities(row)"
+              class="btn btn-sm btn-wide btn-outline-primary mr-1"
+            >
+              <i class="icon i-Eye"></i>
+            </button>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef style="white-space: nowrap">
+            Acciones
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <button class="btn btn-sm btn-wide btn-outline-secondary mr-1">
+              <i class="icon i-Pen-4"></i>
+            </button>
+            <button class="btn btn-sm btn-wide btn-outline-danger">
+              <i class="icon i-Unlock-2"></i>
+            </button>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row
+          *matRowDef="let row; columns: displayedColumns; let i = index"
+        ></mat-row>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row center-no-data" *matNoDataRow>
+          <td *ngIf="loading" class="mat-cell" colspan="4">
+            <div class="text-center">
+              <span class="spinner-glow spinner-glow-info mb-1 mr-1"></span>
+              <div class="loading-text">Cargando...</div>
+            </div>
+          </td>
+          <td *ngIf="dataSource.data.length > 0" class="mat-cell" colspan="4">
+            No existen coincidencias para "{{ input.value }}"
+          </td>
+          <td
+            *ngIf="dataSource.data.length === 0 && !loading"
+            class="mat-cell"
+            colspan="4"
+          >
+            Sin datos
+          </td>
+        </tr>
+      </mat-table>
+      <mat-paginator
+        #paginator
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        aria-label="Seleccionar página de usuarios"
+        showFirstLastButtons
+      ></mat-paginator>
+    </div>
+  </div>
+</div>
