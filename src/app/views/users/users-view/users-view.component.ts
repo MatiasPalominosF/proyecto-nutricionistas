@@ -3,7 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AddUserComponent } from '../add-user/add-user.component';
+import { ModalUserComponent } from '../modal-user/modal-user.component';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from 'src/app/shared/services/user/user.service';
 import { User } from '../../../shared/models/user.interface';
@@ -120,7 +120,7 @@ export class UsersViewComponent implements OnInit, AfterViewInit {
   }
 
   addUser() {
-    const modalRef = this.modalService.open(AddUserComponent,
+    const modalRef = this.modalService.open(ModalUserComponent,
       {
         ariaLabelledBy: 'Modal usuario',
         windowClass: 'animated fadeInDown my-class',

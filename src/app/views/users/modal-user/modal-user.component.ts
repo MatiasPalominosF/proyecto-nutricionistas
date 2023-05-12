@@ -2,7 +2,6 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { WizardComponent } from 'src/app/shared/components/form-wizard/wizard/wizard.component';
 import { Functionality } from 'src/app/shared/models/functionalities.interface';
 import { User } from 'src/app/shared/models/user.interface';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
@@ -11,11 +10,11 @@ import { EncryptionService } from 'src/app/shared/services/encryption/encryption
 import { UserService } from 'src/app/shared/services/user/user.service';
 
 @Component({
-  selector: 'app-add-user',
-  templateUrl: './add-user.component.html',
-  styleUrls: ['./add-user.component.scss']
+  selector: 'app-modal-user',
+  templateUrl: './modal-user.component.html',
+  styleUrls: ['./modal-user.component.scss']
 })
-export class AddUserComponent implements OnInit {
+export class ModalUserComponent implements OnInit {
   @Output() passEntry: EventEmitter<any> = new EventEmitter();
 
   public infoAccessForm: FormGroup;
