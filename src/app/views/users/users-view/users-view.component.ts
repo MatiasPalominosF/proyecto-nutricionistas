@@ -93,7 +93,9 @@ export class UsersViewComponent implements OnInit, AfterViewInit {
 
       // Para compara numbers usar: data.position.toString().trim().indexOf(searchString.position) !== -1
       return this.removeAccents(data.name).toString().trim().toLowerCase().indexOf(this.removeAccents(searchString.name).toString().trim().toLowerCase()) !== -1 ||
-        this.removeAccents(data.rut).toString().trim().toLowerCase().indexOf(this.removeAccents(searchString.rut).toLowerCase()) !== -1;
+        this.removeAccents(data.rut).toString().trim().toLowerCase().indexOf(this.removeAccents(searchString.rut).toLowerCase()) !== -1 ||
+        this.removeAccents(data.phone).toString().trim().toLowerCase().indexOf(this.removeAccents(searchString.phone).toLowerCase()) !== -1 ||
+        this.removeAccents(data.email).toString().trim().toLowerCase().indexOf(this.removeAccents(searchString.email).toLowerCase()) !== -1;
     }
     return myFilterPredicate;
   }
