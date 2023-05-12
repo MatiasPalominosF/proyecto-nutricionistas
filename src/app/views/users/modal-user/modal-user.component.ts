@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -8,6 +8,7 @@ import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { EmailService } from 'src/app/shared/services/email/email.service';
 import { EncryptionService } from 'src/app/shared/services/encryption/encryption.service';
 import { UserService } from 'src/app/shared/services/user/user.service';
+import isEqual from 'lodash/isEqual';
 
 @Component({
   selector: 'app-modal-user',
@@ -16,6 +17,8 @@ import { UserService } from 'src/app/shared/services/user/user.service';
 })
 export class ModalUserComponent implements OnInit {
   @Output() passEntry: EventEmitter<any> = new EventEmitter();
+  @Input() typeModal: Boolean; // true is for add, false for edit
+  @Input() userEdit?: User;
 
   public infoAccessForm: FormGroup;
   public infoUserForm: FormGroup;
@@ -33,17 +36,10 @@ export class ModalUserComponent implements OnInit {
     private toastr: ToastrService,
   ) { }
 
+
   ngOnInit(): void {
     this.infoAccessForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]]
-    });
-
-    this.checkboxesForm = this.fb.group({
-      casino: [false],
-      aps: [false],
-      clinic: [false],
-      edMaterial: [false],
-      nutrLabeling: [false],
     });
 
     this.infoUserForm = this.fb.group({
@@ -54,6 +50,49 @@ export class ModalUserComponent implements OnInit {
       address: ['', Validators.required],
       registerNumber: ['', Validators.required]
     });
+
+    this.checkboxesForm = this.fb.group({
+      casino: [false],
+      aps: [false],
+      clinic: [false],
+      edMaterial: [false],
+      nutrLabeling: [false],
+    });
+
+    if (!this.typeModal) {
+      this.getData();
+    }
+  }
+
+  getData() {
+    this.two['email'].setValue(this.userEdit.email);
+    this.one['name'].setValue(this.userEdit.name);
+    this.one['lastName'].setValue(this.userEdit.lastName);
+    this.one['phone'].setValue(this.userEdit.phone);
+    this.one['rut'].setValue(this.userEdit.rut);
+    this.one['address'].setValue(this.userEdit.address);
+    this.one['registerNumber'].setValue(this.userEdit.registerNumber);
+    this.three['casino'].setValue(this.userEdit.functionalities.casino);
+    this.three['aps'].setValue(this.userEdit.functionalities.aps);
+    this.three['clinic'].setValue(this.userEdit.functionalities.clinic);
+    this.three['edMaterial'].setValue(this.userEdit.functionalities.edMaterial);
+    this.three['nutrLabeling'].setValue(this.userEdit.functionalities.nutrLabeling);
+  }
+
+  get one() { return this.infoUserForm.controls; }
+
+  get oneValue() { return this.infoUserForm.value; }
+
+  get two() { return this.infoAccessForm.controls; }
+
+  get twoValue() { return this.infoAccessForm.value; }
+
+  get three() { return this.checkboxesForm.controls; }
+
+  get threeValue() { return this.checkboxesForm.value; }
+
+  get userLogged() {
+    return this.encryptionService.decrypt(this.authService.getCurrentUser) as User;
   }
 
   get isCompleted(): boolean {
@@ -105,19 +144,6 @@ export class ModalUserComponent implements OnInit {
     run.setValue(`${formattedBody}-${dv}`);
   }
 
-
-  get one() { return this.infoUserForm.controls; }
-
-  get oneValue() { return this.infoUserForm.value; }
-
-  get two() { return this.infoAccessForm.controls; }
-
-  get twoValue() { return this.infoAccessForm.value; }
-
-  get three() { return this.checkboxesForm.controls; }
-
-  get threeValue() { return this.checkboxesForm.value; }
-
   public hasError = (controlName: string, errorName: string, form: FormGroup) => {
     return form.get(controlName).hasError(errorName);
   };
@@ -139,68 +165,72 @@ export class ModalUserComponent implements OnInit {
     }
 
     this._isValidating = true;
-
-    let functionalities: Functionality = {
-      aps: this.threeValue['aps'],
-      casino: this.threeValue['casino'],
-      clinic: this.threeValue['clinic'],
-      edMaterial: this.threeValue['edMaterial'],
-      nutrLabeling: this.threeValue['nutrLabeling'],
-    };
-
+    const functionalities: Functionality = { ... this.threeValue };
     const password = this.encryptionService.generateRandom(8);
     const user: User = {
-      name: this.oneValue['name'],
+      ...this.oneValue,
+      ...this.twoValue,
+      functionalities: functionalities,
       password: password,
-      lastName: this.oneValue['lastName'],
-      rut: this.oneValue['rut'],
-      phone: this.oneValue['phone'],
-      address: this.oneValue['address'],
       enabled: true,
       role: 'admin',
       createdAt: new Date(),
-      email: this.twoValue['email'],
-      permissions: ['read', 'write', 'delete'],
-      functionalities: functionalities
-    }
+    };
 
-
-    await this.authService.doRegister(user).then(data => {
-      const message = 'test';
-      const url = "www.nutricionistas.websavvy.cl";
-      this.emailService.sendEmail(data, message, url).subscribe(
-        response => {
-          console.log("Correo enviado ", response);
-          this.toastr.info('Correo enviado', 'Correo', { timeOut: 3000, closeButton: true, progressBar: true });
-        },
-        error => {
-          console.log("Error al enviar el correo ", error);
-          this.toastr.error('Error al enviar el correo', 'Correo', { timeOut: 3000, closeButton: true, progressBar: true });
-        }
-
-      );
-      delete data['password'];
-      this.userService.createUser(data)
-        .then(() => {
-          console.info('Usuario creado');
+    if (!this.typeModal) {
+      delete user['password']
+      user.createdAt = this.userEdit.createdAt;
+      user.uid = this.userEdit.uid;
+      if (!isEqual(user, this.userEdit)) {
+        //que actualice
+        const result = await this.userService.updateUser(user);
+        if (result) {
+          console.info('Usuario editado');
           this.passEntry.emit(true);
           this.activeModal.close(true);
           this._isValidating = false;
-        })
-        .catch(error => {
-          console.error("Error al crear el usuario ", error);
-          this.toastr.error('Error al crear el usuario', 'Registrar', { timeOut: 3000, closeButton: true, progressBar: true });
-          this._isValidating = false;
-        })
-    })
-      .catch(error => {
-        if (error.code === 'auth/email-already-in-use') {
-          this.toastr.error('Correo ya registrado', 'Registrar', { timeOut: 3000, closeButton: true, progressBar: true })
-          this._isValidating = false;
-        } else {
-          console.error("Error ", error);
         }
+      } else {
+        this.activeModal.dismiss('Nothing to update');
+      }
+    } else {
+      await this.authService.doRegister(user).then(data => {
+        const message = 'test';
+        const url = "www.nutricionistas.websavvy.cl";
+        this.emailService.sendEmail(data, message, url).subscribe(
+          response => {
+            console.info("Correo enviado");
+            this.toastr.info('Correo enviado', 'Correo', { timeOut: 3000, closeButton: true, progressBar: true });
+          },
+          error => {
+            console.log("Error al enviar el correo ", error);
+            this.toastr.error('Error al enviar el correo', 'Correo', { timeOut: 3000, closeButton: true, progressBar: true });
+          }
+
+        );
+        delete data['password'];
+        this.userService.createUser(data)
+          .then(() => {
+            console.info('Usuario creado');
+            this.passEntry.emit(true);
+            this.activeModal.close(true);
+            this._isValidating = false;
+          })
+          .catch(error => {
+            console.error("Error al crear el usuario ", error);
+            this.toastr.error('Error al crear el usuario', 'Registrar', { timeOut: 3000, closeButton: true, progressBar: true });
+            this._isValidating = false;
+          })
       })
+        .catch(error => {
+          if (error.code === 'auth/email-already-in-use') {
+            this.toastr.error('Correo ya registrado', 'Registrar', { timeOut: 3000, closeButton: true, progressBar: true })
+            this._isValidating = false;
+          } else {
+            console.error("Error ", error);
+          }
+        })
+    }
   }
 
 

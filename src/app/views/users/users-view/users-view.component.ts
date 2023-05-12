@@ -127,13 +127,40 @@ export class UsersViewComponent implements OnInit, AfterViewInit {
         backdrop: 'static',
         size: 'lg'
       });
+
+    modalRef.componentInstance.typeModal = true;
     modalRef.result.then((result) => {
       if (result) {
         this.toastr.success('Usuario agregado con éxito', 'Nuevo usuario', { timeOut: 3000, closeButton: true, progressBar: true })
       }
     }, (reason) => {
-      console.info('Modal close');
+      console.info(`Modal closed ${this.getDismissReason(reason)}`);
     });
+  }
+
+  editUser(user: User) {
+    console.log("Se presiona");
+    const modalRef = this.modalService.open(ModalUserComponent,
+      {
+        ariaLabelledBy: 'Modal usuario',
+        windowClass: 'animated fadeInDown my-class',
+        backdrop: 'static',
+        size: 'lg'
+      });
+
+    modalRef.componentInstance.typeModal = false;
+    modalRef.componentInstance.userEdit = { ...user };
+    modalRef.result.then((result) => {
+      if (result) {
+        this.toastr.success('Usuario editado con éxito', 'Editar usuario', { timeOut: 3000, closeButton: true, progressBar: true })
+      }
+    }, (reason) => {
+      console.info(`Modal closed ${this.getDismissReason(reason)}`);
+    });
+  }
+
+  changeStateUser() {
+    
   }
 
 }

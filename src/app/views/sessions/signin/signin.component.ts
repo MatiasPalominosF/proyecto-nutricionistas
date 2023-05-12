@@ -78,7 +78,9 @@ export class SigninComponent implements OnInit, OnDestroy {
             );
         } catch (err) {
             if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-email') {
-                this.toastr.error('Correo o contraseña incorrecta', 'Inicio sesión', { timeOut: 3000, closeButton: true, progressBar: true })
+                this.toastr.error('Correo o contraseña incorrecta', 'Inicio sesión', { timeOut: 3000, closeButton: true, progressBar: true });
+            } else if (err.code === 'auth/network-request-failed') {
+                this.toastr.error('Sin conexión', 'Error de red', { timeOut: 3000, closeButton: true, progressBar: true });
             }
             this.loading = false;
         }

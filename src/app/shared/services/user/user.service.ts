@@ -72,22 +72,34 @@ export class UserService {
   }
 
   async updateUser(user: User): Promise<boolean> {
-    const userRef = this.afs.collection('users').doc(user.uid).ref;
-
-    try {
-      await this.afs.firestore.runTransaction(async transaction => {
-        const userDoc = await transaction.get(userRef);
-        const functionalities = userDoc.get('functionalities');
-        if (!isEqual(functionalities, user.functionalities)) {
-          transaction.update(userRef, { functionalities: user.functionalities });
-          return true;
-        }
-        return false;
-      });
-      return true;
-    } catch (error) {
-      console.error(`Error al actualizar usuario: ${error.message}`);
-      return false;
-    }
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.afs.collection('users').doc(user.uid).update(user);
+        resolve(true);
+      } catch (error) {
+        console.log("error: ", error);
+        reject(false);
+      }
+    });
   }
+
+  // async updateUser(user: User): Promise<boolean> {
+  //   const userRef = this.afs.collection('users').doc(user.uid).ref;
+
+  //   try {
+  //     await this.afs.firestore.runTransaction(async transaction => {
+  //       const userDoc = await transaction.get(userRef);
+  //       const functionalities = userDoc.get('functionalities');
+  //       if (!isEqual(functionalities, user.functionalities)) {
+  //         transaction.update(userRef, { functionalities: user.functionalities });
+  //         return true;
+  //       }
+  //       return false;
+  //     });
+  //     return true;
+  //   } catch (error) {
+  //     console.error(`Error al actualizar usuario: ${error.message}`);
+  //     return false;
+  //   }
+  // }
 }

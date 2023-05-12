@@ -154,11 +154,21 @@
             Acciones
           </mat-header-cell>
           <mat-cell *matCellDef="let row">
-            <button class="btn btn-sm btn-wide btn-outline-secondary mr-1">
+            <button
+              (click)="editUser(row)"
+              class="btn btn-sm btn-wide btn-outline-secondary mr-1"
+            >
               <i class="icon i-Pen-4"></i>
             </button>
-            <button class="btn btn-sm btn-wide btn-outline-danger">
-              <i class="icon i-Unlock-2"></i>
+            <button
+              click="changeStateUser(row)"
+              [ngClass]="[
+                row.enabled ? 'btn-outline-success' : 'btn-outline-danger'
+              ]"
+              class="btn btn-sm btn-wide"
+            >
+              <i *ngIf="row.enabled" class="icon i-Unlock-2"></i>
+              <i *ngIf="!row.enabled" class="icon i-Lock-2"></i>
             </button>
           </mat-cell>
         </ng-container>

@@ -25,8 +25,9 @@ export class AuthService {
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
-  public set setCurrentUser(user: string) {
-    this.currentUserSubject.next(user);
+  public set setCurrentUser(userEncrypted: string) {
+    this.ls.setItem('currentUser', userEncrypted);
+    this.currentUserSubject.next(userEncrypted);
   }
 
   public get getCurrentUser(): string {
