@@ -57,10 +57,6 @@ export class AddUserComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
-
-  }
-
   get isCompleted(): boolean {
     return this._isValidating;
   }

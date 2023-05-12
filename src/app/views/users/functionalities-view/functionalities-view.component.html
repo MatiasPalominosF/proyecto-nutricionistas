@@ -1,0 +1,79 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Funcionalidades</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="checkboxesForm">
+    <div class="row">
+      <div class="col-md-12">
+        <div *ngIf="!isValidating; else elseBlock" class="row">
+          <div class="col-md-2">
+            <label class="checkbox checkbox-success">
+              <input type="checkbox" formControlName="casino" />
+              <span>Registro SAN</span>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="col-md-3">
+            <label class="checkbox checkbox-success">
+              <input type="checkbox" formControlName="aps" />
+              <span>Atención primaria en salud</span>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="col-md-2">
+            <label class="checkbox checkbox-success">
+              <input type="checkbox" formControlName="clinic" />
+              <span>Salud clínica</span>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="col-md-2">
+            <label class="checkbox checkbox-success">
+              <input type="checkbox" formControlName="edMaterial" />
+              <span>Material educativo</span>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="col-md-3">
+            <label class="checkbox checkbox-success">
+              <input type="checkbox" formControlName="nutrLabeling" />
+              <span>Etiquetado nutricional</span>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+        <ng-template #elseBlock>
+          <div class="text-center mt-4 mb-4">
+            <span class="spinner-glow spinner-glow-info mr-1"></span>
+            <div>Cargando...</div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-outline-secondary btn-rounded"
+    (click)="activeModal.dismiss('Cancel')"
+  >
+    Cancelar
+  </button>
+  <button
+    type="button"
+    ngbAutofocus
+    class="btn btn-primary btn-rounded"
+    (click)="onSubmit()"
+  >
+    Aceptar
+  </button>
+</div>

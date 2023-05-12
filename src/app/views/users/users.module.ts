@@ -8,13 +8,15 @@ import { AddUserComponent } from './add-user/add-user.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormWizardModule } from 'src/app/shared/components/form-wizard/form-wizard.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FunctionalitiesViewComponent } from './functionalities-view/functionalities-view.component';
 
 
 
 @NgModule({
   declarations: [
     UsersViewComponent,
-    AddUserComponent
+    AddUserComponent,
+    FunctionalitiesViewComponent
   ],
   imports: [
     CommonModule,

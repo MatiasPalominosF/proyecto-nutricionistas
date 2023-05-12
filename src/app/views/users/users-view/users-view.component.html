@@ -139,7 +139,10 @@
             style="padding: 0px"
             data-label="Funcionalidades"
           >
-            <button class="btn btn-sm btn-wide btn-outline-primary mr-1">
+            <button
+              (click)="showFunctionalities(row)"
+              class="btn btn-sm btn-wide btn-outline-primary mr-1"
+            >
               <i class="icon i-Eye"></i>
             </button>
           </mat-cell>

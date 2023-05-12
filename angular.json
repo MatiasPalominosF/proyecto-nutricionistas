@@ -28,7 +28,8 @@
               "echarts",
               "highlight.js",
               "angular2-text-mask",
-              "crypto-js"
+              "crypto-js",
+              "lodash/isEqual"
             ],
             "outputPath": "dist",
             "index": "src/index.html",

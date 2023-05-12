@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { EncryptionService } from '../encryption/encryption.service';
 import { LocalStoreService } from '../local-store/local-store.service';
+import isEqual from 'lodash/isEqual';
 
 @Injectable({
   providedIn: 'root'
@@ -70,5 +71,23 @@ export class UserService {
     }));
   }
 
+  async updateUser(user: User): Promise<boolean> {
+    const userRef = this.afs.collection('users').doc(user.uid).ref;
 
+    try {
+      await this.afs.firestore.runTransaction(async transaction => {
+        const userDoc = await transaction.get(userRef);
+        const functionalities = userDoc.get('functionalities');
+        if (!isEqual(functionalities, user.functionalities)) {
+          transaction.update(userRef, { functionalities: user.functionalities });
+          return true;
+        }
+        return false;
+      });
+      return true;
+    } catch (error) {
+      console.error(`Error al actualizar usuario: ${error.message}`);
+      return false;
+    }
+  }
 }

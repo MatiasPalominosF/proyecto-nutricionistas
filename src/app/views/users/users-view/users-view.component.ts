@@ -2,11 +2,12 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddUserComponent } from '../add-user/add-user.component';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from 'src/app/shared/services/user/user.service';
 import { User } from '../../../shared/models/user.interface';
+import { FunctionalitiesViewComponent } from '../functionalities-view/functionalities-view.component';
 
 @Component({
   selector: 'app-users-view',
@@ -30,6 +31,34 @@ export class UsersViewComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.getData();
+  }
+
+  showFunctionalities(user: User) {
+    const modalRef = this.modalService.open(FunctionalitiesViewComponent,
+      {
+        ariaLabelledBy: 'Modal usuario',
+        windowClass: 'animated fadeInDown my-class',
+        backdrop: 'static',
+        size: 'lg'
+      });
+    modalRef.componentInstance.user = { ...user };
+    modalRef.result.then((result) => {
+      if (result) {
+        this.toastr.success('Funcionalidades editadas con éxito', 'Funcionalidades', { timeOut: 3000, closeButton: true, progressBar: true })
+      }
+    }, (reason) => {
+      console.info(`Modal closed ${this.getDismissReason(reason)}`);
+    })
+  }
+
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
   }
 
   getData() {
