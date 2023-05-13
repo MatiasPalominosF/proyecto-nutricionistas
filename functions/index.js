@@ -83,7 +83,7 @@ exports.sendEmail = functions.https.onRequest((req, res) => {
     <table style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-collapse: collapse; border: 1px solid #cccccc;">
       <tr>
        <td style="padding: 40px 20px; text-align: center; background-color: #663399; vertical-align: middle;">
-  <img class="logo" src="https://firebasestorage.googleapis.com/v0/b/nutricionistas-proyecto.appspot.com/o/logo%2Flogo.webp?alt=media&token=d7d62f7f-5b2b-4a93-8c65-6d0e684dc467" alt="Logo">
+  <img class="logo" src="https://firebasestorage.googleapis.com/v0/b/nutricionistas-proyecto.appspot.com/o/logo%2Flogo.png?alt=media&token=b8ea0943-747c-45de-9cb8-9a6c6a292bbc" alt="Logo">
   <h1 style="color: #ffffff; font-size: 28px; margin-top: 0;">¡Bienvenido ${name} a WebSavvy!</h1>
 </td>
 
