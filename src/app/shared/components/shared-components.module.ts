@@ -9,6 +9,7 @@ import { SearchModule } from './search/search.module';
 import { SharedDirectivesModule } from '../directives/shared-directives.module';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { LayoutsModule } from './layouts/layouts.module';
+import { ConfirmDialogModule } from './confirm-dialog/confirm-dialog.module';
 
 const components = [
   BtnLoadingComponent,
@@ -23,8 +24,9 @@ const components = [
     SharedPipesModule,
     SharedDirectivesModule,
     SearchModule,
+    ConfirmDialogModule,
     PerfectScrollbarModule,
-    NgbModule
+    NgbModule,
   ],
   declarations: components,
   exports: components

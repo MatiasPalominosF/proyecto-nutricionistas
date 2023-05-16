@@ -60,32 +60,31 @@ export class SigninComponent implements OnInit, OnDestroy {
         }, 3000)
     }
 
-    async signin() {
+    signin() {
         this.loading = true;
         this.submitted = true;
         this.loadingText = 'Iniciando...';
-
-        try {
-            const res = await this.auth.doLogin(this.fValue);
-            this.subscriptions.push(
-                this.userService.getUserByUid(res.user.uid).subscribe(async (user) => {
-                    const encryptData = this.encryptionService.encrypt(user);
-                    this.ls.setItem('currentUser', encryptData)
-                    this.auth.setCurrentUser = encryptData;
-                    this.router.navigateByUrl('/dashboard/v1');
-                    this.loading = false;
-                })
-            );
-        } catch (err) {
-            if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-email') {
-                this.toastr.error('Correo o contraseña incorrecta', 'Inicio sesión', { timeOut: 3000, closeButton: true, progressBar: true });
-            } else if (err.code === 'auth/network-request-failed') {
-                this.toastr.error('Sin conexión', 'Error de red', { timeOut: 3000, closeButton: true, progressBar: true });
-            }
-            this.loading = false;
-        }
+        this.auth.doLogin(this.fValue).then(
+            res => {
+                this.subscriptions.push(
+                    this.userService.getUserByUid(res.user.uid).subscribe(async (user) => {
+                        const encryptData = this.encryptionService.encrypt(user);
+                        this.ls.setItem('currentUser', encryptData)
+                        this.auth.setCurrentUser = encryptData;
+                        this.router.navigateByUrl('/dashboard/v1');
+                        this.loading = false;
+                    })
+                );
+            }).catch((err) => {
+                if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-email') {
+                    this.toastr.error('Correo o contraseña incorrecta', 'Inicio sesión', { timeOut: 3000, closeButton: true, progressBar: true });
+                } else if (err.code === 'auth/network-request-failed') {
+                    this.toastr.error('Sin conexión', 'Error de red', { timeOut: 3000, closeButton: true, progressBar: true });
+                }
+                this.loading = false;
+                console.error(err);
+            });
     }
-
 
     isAutenticated(): void {
         if (!this.ls.getItem('authenticated')) {

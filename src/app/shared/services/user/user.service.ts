@@ -77,10 +77,20 @@ export class UserService {
         await this.afs.collection('users').doc(user.uid).update(user);
         resolve(true);
       } catch (error) {
-        console.log("error: ", error);
         reject(false);
       }
     });
+  }
+
+  changeStateUser(user: User): Promise<boolean> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.afs.collection('users').doc(user.uid).update({ enabled: !user.enabled });
+        resolve(true);
+      } catch (error) {
+        reject(false);
+      }
+    })
   }
 
   // async updateUser(user: User): Promise<boolean> {

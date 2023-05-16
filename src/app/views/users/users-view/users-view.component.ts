@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { UserService } from 'src/app/shared/services/user/user.service';
 import { User } from '../../../shared/models/user.interface';
 import { FunctionalitiesViewComponent } from '../functionalities-view/functionalities-view.component';
+import { ConfirmationDialogService } from 'src/app/shared/services/confirmation-dialog/confirmation-dialog.service';
 
 @Component({
   selector: 'app-users-view',
@@ -27,6 +28,7 @@ export class UsersViewComponent implements OnInit, AfterViewInit {
     private modalService: NgbModal,
     private toastr: ToastrService,
     private userService: UserService,
+    private confirmationDialogService: ConfirmationDialogService
   ) { }
 
   ngOnInit(): void {
@@ -123,7 +125,7 @@ export class UsersViewComponent implements OnInit, AfterViewInit {
     const modalRef = this.modalService.open(ModalUserComponent,
       {
         ariaLabelledBy: 'Modal usuario',
-        windowClass: 'animated fadeInDown my-class',
+        windowClass: 'animated fadeInDown',
         backdrop: 'static',
         size: 'lg'
       });
@@ -143,7 +145,7 @@ export class UsersViewComponent implements OnInit, AfterViewInit {
     const modalRef = this.modalService.open(ModalUserComponent,
       {
         ariaLabelledBy: 'Modal usuario',
-        windowClass: 'animated fadeInDown my-class',
+        windowClass: 'animated fadeInDown',
         backdrop: 'static',
         size: 'lg'
       });
@@ -159,8 +161,32 @@ export class UsersViewComponent implements OnInit, AfterViewInit {
     });
   }
 
-  changeStateUser() {
-    
+  changeStateUser(user: User) {
+    const isUserEnabled = user.enabled;
+    const type = isUserEnabled ? 'Desactivar' : 'Activar';
+    const action = isUserEnabled ? 'El usuario no podrá seguir utilizando las funcionalidades de la aplicación.' : 'El usuario podrá seguir utilizando las funcionalidades de la aplicación.';
+
+    const confirmationMessage = `¿Estás seguro de ${type.toLocaleLowerCase()} el perfil de`;
+    const successMessage = `Usuario ${isUserEnabled ? 'desactivado' : 'activado'} correctamente.`;
+    const errorMessage = `Error al ${isUserEnabled ? 'desactivar' : 'activar'} el usuario.`;
+
+    this.confirmationDialogService.confirm(`${type} usuario`, confirmationMessage, action, `${user.name} ${user.lastName}`, !user.enabled)
+      .then(async confirmed => {
+        if (!confirmed) {
+          return;
+        }
+        const result = await this.userService.changeStateUser(user);
+
+        if (result) {
+          this.toastr.success(successMessage, `${type} usuario`);
+        } else {
+          this.toastr.error(errorMessage, `${type} usuario`);
+        }
+      })
+      .catch(err => {
+        console.info('Closed by cross click');
+      });
   }
+
 
 }

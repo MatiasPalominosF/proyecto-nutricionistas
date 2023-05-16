@@ -161,7 +161,7 @@
               <i class="icon i-Pen-4"></i>
             </button>
             <button
-              click="changeStateUser(row)"
+              (click)="changeStateUser(row)"
               [ngClass]="[
                 row.enabled ? 'btn-outline-success' : 'btn-outline-danger'
               ]"
