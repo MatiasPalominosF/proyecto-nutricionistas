@@ -23,4 +23,5 @@ export interface User {
     role?: string;
     permissions?: string[];
     registerNumber?: string;
+    firstAccess?: boolean;
 }

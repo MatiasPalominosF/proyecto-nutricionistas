@@ -42,15 +42,6 @@ export class ModalUserComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]]
     });
 
-    this.infoUserForm = this.fb.group({
-      name: ['', Validators.required],
-      lastName: ['', Validators.required],
-      phone: ['', [Validators.required, Validators.maxLength(9), Validators.minLength(9), Validators.pattern(/^[0-9]*$/)]],
-      rut: ['', [Validators.required, Validators.maxLength(12), Validators.pattern(/^[0-9]+-[0-9kK]{1}|(((\d{2})|(\d{1})).\d{3}\.\d{3}-)([0-9kK]){1}$/), this.checkVerificatorDigit]],
-      address: ['', Validators.required],
-      registerNumber: ['', Validators.required]
-    });
-
     this.checkboxesForm = this.fb.group({
       casino: [false],
       aps: [false],
@@ -60,7 +51,22 @@ export class ModalUserComponent implements OnInit {
     });
 
     if (!this.typeModal) {
+      this.infoUserForm = this.fb.group({
+        name: ['', Validators.required],
+        lastName: ['', Validators.required],
+        phone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9), Validators.pattern(/^[0-9]*$/)]],
+        rut: ['', [Validators.required, Validators.maxLength(12), Validators.pattern(/^[0-9]+-[0-9kK]{1}|(((\d{2})|(\d{1})).\d{3}\.\d{3}-)([0-9kK]){1}$/), this.checkVerificatorDigit]],
+        address: ['', Validators.required],
+        registerNumber: ['', Validators.required]
+      });
       this.getData();
+    } else {
+      this.infoUserForm = this.fb.group({
+        name: ['', Validators.required],
+        lastName: ['', Validators.required],
+        rut: ['', [Validators.required, Validators.maxLength(12), Validators.pattern(/^[0-9]+-[0-9kK]{1}|(((\d{2})|(\d{1})).\d{3}\.\d{3}-)([0-9kK]){1}$/), this.checkVerificatorDigit]],
+        registerNumber: ['', Validators.required]
+      });
     }
   }
 
@@ -68,9 +74,9 @@ export class ModalUserComponent implements OnInit {
     this.two['email'].setValue(this.userEdit.email);
     this.one['name'].setValue(this.userEdit.name);
     this.one['lastName'].setValue(this.userEdit.lastName);
-    this.one['phone'].setValue(this.userEdit.phone);
+    this.one['phone'].setValue(this.userEdit.phone ? this.userEdit.phone : 'S/I');
     this.one['rut'].setValue(this.userEdit.rut);
-    this.one['address'].setValue(this.userEdit.address);
+    this.one['address'].setValue(this.userEdit.address ? this.userEdit.address : 'S/I');
     this.one['registerNumber'].setValue(this.userEdit.registerNumber);
     this.three['casino'].setValue(this.userEdit.functionalities.casino);
     this.three['aps'].setValue(this.userEdit.functionalities.aps);
@@ -173,6 +179,7 @@ export class ModalUserComponent implements OnInit {
       functionalities: functionalities,
       password: password,
       enabled: true,
+      firstAccess: true,
       role: 'admin',
       createdAt: new Date(),
     };

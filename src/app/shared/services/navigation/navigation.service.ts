@@ -52,12 +52,7 @@ export class NavigationService {
     constructor(
         private encryptionService: EncryptionService,
         private auth: AuthService
-    ) {
-        const decryptedUser = this.encryptionService.decrypt(this.auth.getCurrentUser) as User;
-        const userType = decryptedUser.role;
-
-        this.publishNavigationChange(userType);
-    }
+    ) { }
 
     superAdmin: IMenuItem[] = [
         { //DASHBOARD  
@@ -114,11 +109,14 @@ export class NavigationService {
         }
     ];
 
+    defaultMenu2: IMenuItem[] = [];
+
 
     // sets iconMenu as default;
     menuItems = new BehaviorSubject<IMenuItem[]>(this.defaultMenu);
     // navigation component has subscribed to this Observable
     menuItems$ = this.menuItems.asObservable();
+
 
     // You can customize this method to supply different menu for
     // different user type.
@@ -128,9 +126,8 @@ export class NavigationService {
         'user': this.defaultMenu,
         'superadmin': this.superAdmin,
     };
-    
-    publishNavigationChange(menuType: string) {
-        this.menuItems.next(this.menus[menuType] || this.defaultMenu);
-    }
 
+    publishNavigationChange(menuType: string) {
+        this.menuItems.next(this.menus[menuType] || this.defaultMenu2);
+    }
 }

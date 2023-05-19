@@ -69,7 +69,6 @@ export class SigninComponent implements OnInit, OnDestroy {
                 this.subscriptions.push(
                     this.userService.getUserByUid(res.user.uid).subscribe(async (user) => {
                         const encryptData = this.encryptionService.encrypt(user);
-                        this.ls.setItem('currentUser', encryptData)
                         this.auth.setCurrentUser = encryptData;
                         this.router.navigateByUrl('/dashboard/v1');
                         this.loading = false;

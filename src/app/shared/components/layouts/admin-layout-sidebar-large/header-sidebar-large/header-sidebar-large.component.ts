@@ -102,7 +102,6 @@ export class HeaderSidebarLargeComponent implements OnInit {
   }
 
   signout() {
-    this.auth.setCurrentUser = null;
     this.auth.doLogout();
   }
 

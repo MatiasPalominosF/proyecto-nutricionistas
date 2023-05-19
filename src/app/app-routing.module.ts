@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/auth-layout.component';
-import { AuthGuard } from './shared/guards/auth.guard';
 import { BlankLayoutComponent } from './shared/components/layouts/blank-layout/blank-layout.component';
 import { AdminLayoutSidebarLargeComponent } from './shared/components/layouts/admin-layout-sidebar-large/admin-layout-sidebar-large.component';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { InfoGuard } from './shared/guards/info/info.guard';
+import { AuthGuard } from './shared/guards/auth/auth.guard';
 
 const adminRoutes: Routes = [
   {
@@ -44,7 +45,7 @@ const routes: Routes = [
   {
     path: '',
     component: AdminLayoutSidebarLargeComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, InfoGuard],
     children: adminRoutes
   },
   {

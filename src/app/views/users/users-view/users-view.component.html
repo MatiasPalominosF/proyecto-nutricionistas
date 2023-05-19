@@ -88,7 +88,7 @@
             style="padding: 0px"
             data-label="Contacto"
           >
-            +56{{ row.phone }}
+            {{ row.phone ? "+56" + row.phone : "S/I"}}
           </mat-cell>
         </ng-container>
 

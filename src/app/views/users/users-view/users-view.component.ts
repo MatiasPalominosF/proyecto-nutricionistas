@@ -9,6 +9,8 @@ import { UserService } from 'src/app/shared/services/user/user.service';
 import { User } from '../../../shared/models/user.interface';
 import { FunctionalitiesViewComponent } from '../functionalities-view/functionalities-view.component';
 import { ConfirmationDialogService } from 'src/app/shared/services/confirmation-dialog/confirmation-dialog.service';
+import { AuthService } from 'src/app/shared/services/auth/auth.service';
+import { EncryptionService } from 'src/app/shared/services/encryption/encryption.service';
 
 @Component({
   selector: 'app-users-view',
@@ -22,17 +24,24 @@ export class UsersViewComponent implements OnInit, AfterViewInit {
   public displayedColumns: string[] = ['position', 'rut', 'name', 'phone', 'email', 'enabled', 'functionalities', 'actions'];
   public dataSource: MatTableDataSource<User> = new MatTableDataSource<User>();
   public loading: boolean = false;
-
+  private currentUser: User = {};
 
   constructor(
     private modalService: NgbModal,
     private toastr: ToastrService,
     private userService: UserService,
-    private confirmationDialogService: ConfirmationDialogService
+    private confirmationDialogService: ConfirmationDialogService,
+    private authService: AuthService,
+    private encryptionService: EncryptionService
   ) { }
 
   ngOnInit(): void {
     this.getData();
+    this.currentUser = this.getCurrentUser;
+  }
+
+  get getCurrentUser() {
+    return this.encryptionService.decrypt(this.authService.getCurrentUser);
   }
 
   showFunctionalities(user: User) {

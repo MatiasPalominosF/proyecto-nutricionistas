@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ResolveEnd, ResolveStart, RouteConfigLoadEnd, RouteConfigLoadStart, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
@@ -7,6 +8,7 @@ import { delay } from 'rxjs/operators';
 import { SharedAnimations } from 'src/app/shared/animations/shared-animations';
 import { User } from 'src/app/shared/models/user.interface';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
+import { EncryptionService } from 'src/app/shared/services/encryption/encryption.service';
 import { UserService } from 'src/app/shared/services/user/user.service';
 
 @Component({
@@ -22,13 +24,16 @@ export class SignupComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   public loading: boolean;
   public loadingText: string;
+  private userLoggedIn: User = {};
 
   constructor(
     private formBuilder: FormBuilder,
     private userService: UserService,
     private router: Router,
     private authService: AuthService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private encryptionService: EncryptionService,
+    private afAuth: AngularFireAuth
   ) { }
 
   ngOnDestroy(): void {
@@ -39,13 +44,28 @@ export class SignupComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
-      rut: ['', Validators.required],
-      name: ['', Validators.required],
-      email: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required, Validators.minLength(6), this.matchPasswordValidator('password')]],
+      phone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9), Validators.pattern(/^[0-9]*$/)]],
+      address: ['', Validators.required],
     });
+    this.getCurrentUser();
+    console.log(this.userLoggedIn);
+  }
+  matchPasswordValidator(controlName: string): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const passwordControl = control.root.get(controlName);
+      if (passwordControl && control.value !== passwordControl.value) {
+        return { passwordMismatch: true };
+      }
+      return null;
+    };
   }
 
+  getCurrentUser(): void {
+    const userEncrypted: string = this.authService.getCurrentUser;
+    this.userLoggedIn = this.encryptionService.decrypt(userEncrypted);
+  }
   async tryRegister() {
     this.submitted = true;
 
@@ -54,42 +74,30 @@ export class SignupComponent implements OnInit, OnDestroy {
     }
     this.loading = true;
     this.loadingText = 'Registrando ...';
-    let user: User = {
-      ...this.fValue,
-      email: this.fValue.email.replace(/\s/g, "").toLowerCase(),
-      createdAt: new Date(),
-      enabled: true,
-      lastActivity: new Date(),
-      role: 'superadmin',
-      permissions: ['read', 'write', 'update', 'delete'],
-      phone: '89189474',
-      address: 'Población Mataquito pasaje 3 #105',
-    };
+    const userUpdated: User = { ...this.userLoggedIn, ...this.fValue };
 
-    await this.authService.doRegister(user)
-      .then(data => {
-        delete data['password'];
-        this.userService.createUser(data)
-          .then(() => {
-            console.info('Usuario creado');
-            this.toastr.success('Usuario creado', 'Registrar', { timeOut: 3000, closeButton: true, progressBar: true });
-            this.router.navigateByUrl('/sessions/signin');
-            this.loading = false;
-          })
-          .catch(error => {
-            console.error("Error al crear el usuario ", error);
-            this.loading = false;
-            this.loadingText = 'Reintentar registro';
-          })
-      })
-      .catch(error => {
-        if (error.code === 'auth/email-already-in-use') {
-          this.toastr.error('Correo ya registrado', 'Registrar', { timeOut: 3000, closeButton: true, progressBar: true })
-        } else {
-          console.error("Error ", error);
-        }
-        this.loading = false;
-      })
+    this.afAuth.currentUser.then(user => {
+      user.updatePassword(userUpdated.password)
+        .then(
+          async () => {
+            delete userUpdated['password'];
+            delete userUpdated['confirmPassword'];
+            userUpdated.firstAccess = false;
+            const result = await this.userService.updateUser(userUpdated);
+            if (result) {
+              this.toastr.success('Usuario actualizado correctamente', 'Finalizar registro', { timeOut: 3000, closeButton: true, progressBar: true });
+              this.authService.doLogout();
+              this.loading = false;
+            } else {
+              this.toastr.error('Error al actualizar el usuario', 'Finalizar registro', { timeOut: 3000, closeButton: true, progressBar: true });
+              this.loading = false;
+            }
+          }
+        ).catch((error) => {
+          console.error(error);
+          this.loading = false;
+        });
+    });
   }
 
   public hasError = (controlName: string, errorName: string) => {

@@ -49,86 +49,120 @@
         <!-- <p class="mb-4 text-muted font-small">Lorem ipsum dolor sit amet.</p> -->
         <form [formGroup]="registerForm" (ngSubmit)="tryRegister()">
           <div class="form-group">
-            <label for="name">Nombre</label>
-            <input
-              id="name"
-              formControlName="name"
-              class="form-control form-control-rounded"
-              type="text"
-              [ngClass]="{
-                'is-invalid': submitted && f.name.errors
-              }"
-              placeholder="Ingrese nombre"
-            /><small
-              class="form-text text-muted danger"
-              *ngIf="submitted && f.name.errors"
-              class="invalid-feedback"
-            >
-              <div *ngIf="hasError('name', 'required')">
-                El nombre del usuario es requerido
-              </div>
-            </small>
-          </div>
-          <div class="form-group">
-            <label for="rut">RUT</label>
-            <input
-              id="rut"
-              formControlName="rut"
-              class="form-control form-control-rounded"
-              type="text"
-              [ngClass]="{
-                'is-invalid': submitted && f.rut.errors
-              }"
-              placeholder="Ingrese RUT"
-            /><small
-              class="form-text text-muted danger"
-              *ngIf="submitted && f.rut.errors"
-              class="invalid-feedback"
-            >
-              <div *ngIf="hasError('rut', 'required')">
-                El rut del usuario es requerido
-              </div>
-            </small>
-          </div>
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input
-              id="email"
-              formControlName="email"
-              class="form-control form-control-rounded"
-              type="email"
-              [ngClass]="{
-                'is-invalid': submitted && f.email.errors
-              }"
-              placeholder="Ingrese email"
-            /><small
-              class="form-text text-muted danger"
-              *ngIf="submitted && f.email.errors"
-              class="invalid-feedback"
-            >
-              <div *ngIf="hasError('email', 'required')">
-                El email del usuario es requerido
-              </div>
-            </small>
-          </div>
-          <div class="form-group">
-            <label for="password">Contraseña</label>
+            <label for="password">Nueva contraseña</label>
             <input
               id="password"
               formControlName="password"
               class="form-control form-control-rounded"
               type="password"
               [ngClass]="{
-                'is-invalid': submitted && f.password.errors
+                'is-invalid':
+                  (submitted && f.password.errors) ||
+                  (f.password.touched && f.password.errors)
               }"
-              placeholder="Ingrese contraseña"
+              placeholder="Ingrese nueva contraseña"
             /><small
               class="form-text text-muted danger"
-              *ngIf="submitted && f.password.errors"
+              *ngIf="
+                (submitted && f.password.errors) ||
+                (f.password.touched && f.password.errors)
+              "
               class="invalid-feedback"
             >
               <div *ngIf="hasError('password', 'required')">
-                La contraseña del usuario es requerida
+                La nueva contraseña es requerida
+              </div>
+              <div *ngIf="hasError('password', 'minlength')">
+                La contraseña debe contener mínimo 6 caracteres
+              </div>
+            </small>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirmar contraseña</label>
+            <input
+              id="confirmPassword"
+              formControlName="confirmPassword"
+              class="form-control form-control-rounded"
+              type="password"
+              [ngClass]="{
+                'is-invalid':
+                  (submitted && f.confirmPassword.errors) ||
+                  (f.confirmPassword.touched && f.confirmPassword.errors)
+              }"
+              placeholder="Ingrese nueva contraseña"
+            /><small
+              class="form-text text-muted danger"
+              *ngIf="
+                (submitted && f.confirmPassword.errors) ||
+                (f.confirmPassword.touched && f.confirmPassword.errors)
+              "
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('confirmPassword', 'required')">
+                La confirmación de la contraseña es requerida
+              </div>
+              <div *ngIf="hasError('confirmPassword', 'minlength')">
+                La contraseña debe contener mínimo 6 caracteres
+              </div>
+              <div *ngIf="hasError('confirmPassword', 'passwordMismatch')">
+                Las contraseñas no coinciden
+              </div>
+            </small>
+          </div>
+          <div class="form-group">
+            <label for="phone">Celular*</label>
+            <input
+              type="tel"
+              pattern="[0-9]*"
+              maxlength="9"
+              class="form-control form-control-rounded"
+              id="phone"
+              name="phone"
+              placeholder="Ingrese celular"
+              formControlName="phone"
+              [ngClass]="{
+                'is-invalid': f.phone.touched && f.phone.errors
+              }"
+            />
+            <small
+              class="form-text text-muted danger"
+              *ngIf="f.phone.touched && f.phone.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('phone', 'required')">
+                El celular es requerido
+              </div>
+              <div *ngIf="hasError('phone', 'maxlength')">
+                Se aceptan como máximo 8 números
+              </div>
+              <div *ngIf="hasError('phone', 'minlength')">
+                Se aceptan como mínimo 8 números
+              </div>
+              <div *ngIf="hasError('phone', 'pattern')">
+                Solo se aceptan números
+              </div>
+            </small>
+          </div>
+          <div class="form-group">
+            <label for="address">Dirección*</label>
+            <input
+              type="text"
+              class="form-control form-control-rounded"
+              id="address"
+              name="address"
+              placeholder="Ingrese dirección"
+              formControlName="address"
+              [ngClass]="{
+                'is-invalid': f.address.touched && f.address.errors
+              }"
+            />
+            <small
+              class="form-text text-muted danger"
+              *ngIf="f.address.touched && f.address.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="hasError('address', 'required')">
+                La dirección es requerida
               </div>
             </small>
           </div>
@@ -138,7 +172,7 @@
             [loading]="loading"
             [type]="'submit'"
           >
-            Registrar
+            Finalizar registro
           </btn-loading>
         </form>
       </div>
