@@ -40,8 +40,8 @@ export class SigninComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.signinForm = this.fb.group({
-            email: ['palominos90@gmail.com', Validators.required],
-            password: ['Matias1996', Validators.required]
+            email: ['', Validators.required],
+            password: ['', Validators.required]
         });
         this.checkRouterEvent();
     }

@@ -179,7 +179,7 @@ export class ModalUserComponent implements OnInit {
       functionalities: functionalities,
       password: password,
       enabled: true,
-      firstAccess: true,
+      firstAccess: this.userEdit ? this.userEdit.firstAccess : true,
       role: 'admin',
       createdAt: new Date(),
     };

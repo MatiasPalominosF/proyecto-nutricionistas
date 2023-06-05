@@ -1,39 +1,56 @@
-<div class="card o-hidden" [@animate]="{value:'*',params:{y:'120px',opacity:'0',delay:'100ms', duration: '400ms'}}">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="p-4">
-          <div class="auth-logo text-center mb-4">
-            <img src="assets/images/logo.png" alt="">
+<div
+  class="card o-hidden"
+  [@animate]="{
+    value: '*',
+    params: { y: '120px', opacity: '0', delay: '100ms', duration: '400ms' }
+  }"
+>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="p-4">
+        <div class="auth-logo text-center mb-4">
+          <img src="assets/images/logo.png" alt="" />
+        </div>
+        <h1 class="mb-3 text-18">¿Olvidó su contraseña?</h1>
+        <form action="">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input
+              id="email"
+              class="form-control form-control-rounded"
+              type="email"
+            />
           </div>
-          <h1 class="mb-3 text-18">Forgot Password</h1>
-          <form action="">
-            <div class="form-group">
-              <label for="email">Email address</label>
-              <input id="email" class="form-control form-control-rounded" type="email">
-            </div>
-            <button class="btn btn-primary btn-block btn-rounded mt-3">Reset Password</button>
-            
-          </form>
-          <div class="mt-3 text-center">
-            <a href="" class="text-muted" routerLink="/sessions/signin"><u>Sign in</u></a>
-          </div>
+          <button class="btn btn-primary btn-block btn-rounded mt-3">
+            Reestablecer contraseña
+          </button>
+        </form>
+        <div class="mt-3 text-center">
+          <a href="" class="text-muted" routerLink="/sessions/signin"
+            ><u>Iniciar sesión</u></a
+          >
         </div>
       </div>
-      <div class="col-md-6 text-center " style="background-size: cover;background-image: url(./assets/images/photo-long-3.jpg)">
+    </div>
+    <div
+      class="col-md-6 text-center"
+      style="
+        background-size: cover;
+        background-image: url(./assets/images/photo-long-3.jpg);
+        position: relative;
+      "
+    >
+      <div class="gradient-overlay">
         <div class="pr-3 auth-right">
-          <button class="btn btn-outline-primary btn-outline-email btn-block btn-icon-text btn-rounded" routerLink="/sessions/signup">
-            <i class="i-Mail-with-At-Sign"></i>
-            Sign up with Email
-          </button>
-          <button class="btn btn-outline-primary btn-outline-google btn-block btn-icon-text btn-rounded">
-            <i class="i-Google-Plus"></i>
-            Sign in with Google
-          </button>
-          <button class="btn btn-outline-primary btn-outline-facebook btn-block btn-icon-text btn-rounded">
-            <i class="i-Facebook-2"></i>
-            Sign in with Facebook
-          </button>
+          La aplicación web, de gestión para nutricionistas, es la solución que
+          buscabas para llevar un control completo de tus registros de tipo SAN,
+          salud clínica, etiquetado nutricional, y mucho más. Nuestro sistema te
+          permite llevar un seguimiento detallado de tus pacientes, así como
+          realizar análisis nutricionales y personalizar dietas de manera fácil
+          y rápida. Con esta herramienta, podrás optimizar tu trabajo y ofrecer
+          un mejor servicio a tus clientes.
         </div>
       </div>
     </div>
   </div>
+</div>
